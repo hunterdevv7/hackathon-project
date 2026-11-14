@@ -3,6 +3,5 @@ flask-cors>=4.0
 python-dotenv>=1.0
 pytest>=8.0
 
-# Quantum engine — PENDING CONFIRMATION of package name/version/Python support
-# from the Quantum Rings docs/workshop. Uncomment once confirmed:
-# QuantumRingsLib
+# Quantum engine — tested with QuantumRingsLib 0.12.2000 (+ quantumrings-cpu 0.12.2313) on Python 3.13
+QuantumRingsLib==0.12.2000

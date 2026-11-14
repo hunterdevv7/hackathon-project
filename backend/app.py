@@ -33,11 +33,29 @@ def create_app() -> Flask:
     def _not_implemented(err):
         return jsonify({"error": str(err)}), 501
 
+    @app.errorhandler(quantum_source.QuantumEngineError)
+    def _engine_error(err):
+        return jsonify({"error": str(err)}), 503
+
     @app.get("/quantum-draw")
     def quantum_draw():
         result = quantum_source.draw(_parse_n(request.args.get("n")))
         stats.record("quantum", result["bits"])
         return jsonify(result)
+
+    @app.get("/quantum-state")
+    def quantum_state():
+        raw = request.args.get("n")
+        if raw is None:
+            n = 1
+        else:
+            try:
+                n = int(raw)
+            except ValueError:
+                raise BadRequest("n must be an integer")
+        if not 1 <= n <= quantum_source.MAX_STATE_QUBITS:
+            raise BadRequest(f"n must be between 1 and {quantum_source.MAX_STATE_QUBITS}")
+        return jsonify(quantum_source.state(n))
 
     @app.get("/classical-draw")
     def classical_draw():
