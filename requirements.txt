@@ -1,1 +1,8 @@
-streamlit
+flask>=3.0,<4
+flask-cors>=4.0
+python-dotenv>=1.0
+pytest>=8.0
+
+# Quantum engine — PENDING CONFIRMATION of package name/version/Python support
+# from the Quantum Rings docs/workshop. Uncomment once confirmed:
+# QuantumRingsLib
