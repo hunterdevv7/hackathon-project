@@ -1,7 +1,8 @@
 import html
 import random
 import streamlit as st
-#python3 -m streamlit run app.py
+##python3 -m streamlit run app.py
+#What's up guys
 
 
 st.set_page_config(page_title="Cat Profile Generator", layout="centered")
