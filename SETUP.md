@@ -19,6 +19,7 @@ python -m backend.app        # http://localhost:5000
 
 ## 3. Try every endpoint
 ```powershell
+curl http://localhost:5000/health                      # {"status": "ok"}
 curl http://localhost:5000/quantum-draw
 curl http://localhost:5000/classical-draw              # note the "seed"
 curl -X POST http://localhost:5000/classical-draw/replay -H "Content-Type: application/json" -d "{\"seed\": 1234}"

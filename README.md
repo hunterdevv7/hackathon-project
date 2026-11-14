@@ -9,6 +9,7 @@ Setup: see [SETUP.md](SETUP.md).
 ## API contract (locked)
 | Method & path | Response |
 |---|---|
+| `GET /health` | `{"status": "ok"}` (server is up; doesn't call Quantum Rings) |
 | `GET /quantum-draw` | `{"bits": [0,1,...], "source": "quantum", "engine": "mock" \| "quantumrings"}` |
 | `GET /classical-draw` | `{"bits": [...], "seed": 1234, "source": "classical"}` |
 | `POST /classical-draw/replay` body `{"seed": 1234}` | the same bits as the original draw with that seed |

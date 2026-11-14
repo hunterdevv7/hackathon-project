@@ -37,6 +37,10 @@ def create_app() -> Flask:
     def _engine_error(err):
         return jsonify({"error": str(err)}), 503
 
+    @app.get("/health")
+    def health():
+        return jsonify({"status": "ok"})
+
     @app.get("/quantum-draw")
     def quantum_draw():
         result = quantum_source.draw(_parse_n(request.args.get("n")))
