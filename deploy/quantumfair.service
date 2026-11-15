@@ -1,0 +1,53 @@
+# systemd unit: runs the QuantumFair API (which also serves the page) under gunicorn.
+# Installed to /etc/systemd/system/quantumfair.service by deploy/setup.sh.
+[Unit]
+Description=QuantumFair (Flask API + page, gunicorn)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=quantumfair
+Group=quantumfair
+WorkingDirectory=/opt/quantumfair
+# .env in /opt/quantumfair is read by python-dotenv at startup (QUANTUM_MODE, QR_TOKEN, ...).
+# The code is owned by root and read-only to the app, so Python must not try to write caches.
+Environment=PYTHONDONTWRITEBYTECODE=1
+ExecStart=/opt/quantumfair/.venv/bin/gunicorn --workers 2 --bind 127.0.0.1:8000 \
+    --timeout 60 --graceful-timeout 20 --max-requests 1000 --max-requests-jitter 100 \
+    --no-control-socket \
+    --access-logfile - --access-logformat '%(h)s "%(r)s" %(s)s %(b)s %(M)sms' \
+    backend.app:app
+Restart=always
+RestartSec=2
+
+# Sandbox. The app only needs to read its own directory and talk over the network;
+# if it is ever compromised, this is all the attacker gets.
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+ProtectControlGroups=yes
+ProtectClock=yes
+ProtectHostname=yes
+ProtectProc=invisible
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictNamespaces=yes
+RestrictRealtime=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+CapabilityBoundingSet=
+AmbientCapabilities=
+UMask=0077
+# Keep a runaway worker from starving sshd and nginx on the 1 GB box.
+MemoryMax=700M
+TasksMax=256
+
+[Install]
+WantedBy=multi-user.target

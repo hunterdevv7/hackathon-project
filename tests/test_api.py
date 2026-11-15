@@ -1,5 +1,6 @@
 import pytest
 
+from backend import config
 from backend.app import create_app
 
 
@@ -13,11 +14,17 @@ def _assert_bits(bits, n=64):
     assert set(bits) <= {0, 1}
 
 
+def test_health(client):
+    resp = client.get("/health")
+    assert resp.status_code == 200
+    assert resp.get_json() == {"status": "ok"}
+
+
 def test_quantum_draw_shape(client):
     data = client.get("/quantum-draw").get_json()
     _assert_bits(data["bits"])
     assert data["source"] == "quantum"
-    assert data["engine"] == "mock"
+    assert data["engine"] == ("quantumrings" if config.QUANTUM_MODE == "quantumrings" else "mock")
 
 
 def test_classical_draw_shape(client):

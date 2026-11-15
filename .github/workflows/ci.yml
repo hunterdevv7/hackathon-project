@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Tests (Python ${{ matrix.python }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: pytest -q
+        env:
+          QUANTUM_MODE: mock   # no credentials in CI: the live Quantum Rings tests skip
+
+  audit:
+    name: Dependency vulnerabilities
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pip-audit
+      - run: pip-audit -r requirements.txt --desc on
+
+  secrets:
+    name: No committed secrets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fail if a .env, Vultr key or Quantum Rings token is tracked
+        run: |
+          set -e
+          if git ls-files | grep -Ex '\.env|deploy/\.vultr-api-key'; then
+            echo "::error::a credentials file is committed"; exit 1
+          fi
+          if git grep -nE 'rings-[0-9]+\.[A-Za-z0-9]{8,}' -- ':!*.md' ; then
+            echo "::error::looks like a Quantum Rings token is committed"; exit 1
+          fi
+          echo "clean"
