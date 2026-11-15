@@ -31,7 +31,8 @@ The source pill on the quantum panel shows which engine answered. It reads **Qua
 
 - Draws accept an optional `?n=` (1–1024, default 64). Replay accepts an optional `"n"` in its body.
 - `/quantum-state` is for the visualizer. It returns the qubits' state *before* measurement. The response is a new endpoint and changes nothing in the contract above. In `basis_states`, qubit 0 is the rightmost character of `bits`.
-- Errors come back as `{"error": "..."}`: HTTP 400 for bad input, and 503 if the Quantum Rings engine is unavailable. The API never falls back to mock bits.
+- Errors come back as `{"error": "..."}`: HTTP 400 for bad input, 404/405 for unknown routes or methods, 413 for bodies over 64 KB, and 503 if the Quantum Rings engine is unavailable. The API never falls back to mock bits and never returns an HTML error page or a stack trace.
+- Cross-origin browser calls are refused unless `CORS_ORIGINS` is set in `.env` (see `.env.example`). The served page is same-origin, so production doesn't need it. See [SECURITY.md](SECURITY.md).
 - Endpoints added for the page. They change nothing above:
   - `GET /engine` returns `{"engine": "mock" | "quantumrings", "ready": true, "error": null, "backend": "scarlet_quantum_rings", "max_batch": 1024, "seed_space": 10000}`. It reports which engine answers and never draws.
   - `?theta=0..180` (degrees) is optional on `/quantum-draw` and `/quantum-state`. The default of 90 is the H circuit; any other value runs RY(θ) on each qubit, so P(0) = cos²(θ/2). Responses also carry `theta` and `circuit`.

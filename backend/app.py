@@ -5,6 +5,7 @@ from pathlib import Path
 
 from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
+from werkzeug.exceptions import HTTPException
 
 from . import attack, classical_source, config, quantum_source, stats
 
@@ -51,11 +52,24 @@ def _parse_bits(raw, min_len: int) -> list[int]:
 def create_app() -> Flask:
     app = Flask(__name__, static_folder=None)
     app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0  # always serve the latest page while developing
-    CORS(app)
+    app.config["MAX_CONTENT_LENGTH"] = config.MAX_BODY_BYTES
+    if config.CORS_ORIGINS:  # off unless .env opts in (see config.CORS_ORIGINS)
+        CORS(app, origins=config.CORS_ORIGINS, methods=["GET", "POST"])
 
     @app.errorhandler(BadRequest)
     def _bad_request(err):
         return jsonify({"error": str(err)}), 400
+
+    @app.errorhandler(HTTPException)
+    def _http_error(err):
+        """404, 405, 413...: JSON like every other error, not Werkzeug's HTML page."""
+        return jsonify({"error": err.name}), err.code or 500
+
+    @app.errorhandler(Exception)
+    def _unexpected(err):
+        """Anything unforeseen: log the traceback server-side, tell the client nothing."""
+        app.logger.exception("unhandled error on %s %s", request.method, request.path)
+        return jsonify({"error": "Internal Server Error"}), 500
 
     @app.errorhandler(NotImplementedError)
     def _not_implemented(err):

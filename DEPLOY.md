@@ -1,8 +1,10 @@
 # Deploying QuantumFair on Vultr
 
-**Live demo:** _not deployed yet_
+**Live demo:** http://144.202.9.26/ (Vultr `vc2-1c-1gb`, New Jersey; destroy it after the event)
 
 One Vultr Cloud Compute instance runs everything: Ubuntu 24.04, gunicorn running the Flask app (which serves both the page and the API), and nginx on port 80 in front of it. The page calls the API on the same address, so there's no CORS to configure. Quantum draws run through the Quantum Rings SDK on the instance's CPU.
+
+`setup.sh` also hardens the box on every deploy: security updates, key-only SSH with fail2ban, a sandboxed service user that can't modify the code, and nginx rate limits and security headers. [SECURITY.md](SECURITY.md) has the full list and what to do if a credential leaks.
 
 ```
 browser ──80──> nginx ──127.0.0.1:8000──> gunicorn (2 workers) ──> Flask: page + API ──> QuantumRingsLib
@@ -14,8 +16,8 @@ browser ──80──> nginx ──127.0.0.1:8000──> gunicorn (2 workers) �
 | `vultr.sh` | your laptop | Uses the Vultr API to create the SSH key, the firewall group (ports 22 and 80) and the instance, then prints the public IP |
 | `deploy.sh` | your laptop | Copies this working copy to `/opt/quantumfair` over SSH and runs `setup.sh` there. Nothing has to be pushed first. |
 | `setup.sh` | the server | Installs Python and nginx, creates the venv, installs `requirements.txt`, and installs the systemd service and the nginx site. Safe to run again. |
-| `quantumfair.service` | the server | systemd unit for gunicorn. It restarts on crash and starts at boot, so the app survives SSH disconnects and reboots. |
-| `nginx-quantumfair.conf` | the server | Port 80 forwarding to gunicorn |
+| `quantumfair.service` | the server | systemd unit for gunicorn, sandboxed (read-only filesystem, no privileges, memory cap). It restarts on crash and starts at boot, so the app survives SSH disconnects and reboots. |
+| `nginx-quantumfair.conf` | the server | Port 80 forwarding to gunicorn, with per-IP rate limits, a 64 KB body cap and security headers (CSP and friends) |
 
 The scripts need bash, ssh and curl. On Windows, use Git Bash.
 
