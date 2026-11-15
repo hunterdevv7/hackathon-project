@@ -15,6 +15,7 @@ import argparse
 import secrets
 import time
 
+from . import attack as attacker
 from . import classical_source, config, quantum_source, stats
 
 GREEN, RED, DIM, BOLD, RESET = "\033[32m", "\033[31m", "\033[2m", "\033[1m", "\033[0m"
@@ -32,12 +33,7 @@ def header(title: str) -> None:
     print(f"\n{BOLD}=== {title} ==={RESET}")
 
 
-def find_seeds(known: list[int]) -> list[int]:
-    """Try every possible seed; keep those that reproduce the known bits."""
-    return [
-        seed for seed in range(classical_source.SEED_SPACE)
-        if classical_source.draw(len(known), seed=seed)["bits"] == known
-    ]
+find_seeds = attacker.find_seeds  # try every seed, keep those that reproduce the known bits
 
 
 def show_prediction(predicted: list[int], actual: list[int]) -> None:

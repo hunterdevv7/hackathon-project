@@ -17,6 +17,8 @@ On macOS/Linux, use `python3.13 -m venv .venv && source .venv/bin/activate` and 
 python -m backend.app        # http://localhost:5000
 ```
 
+Then open **http://localhost:5000/** in a browser. The API serves the page itself, so there's nothing else to start. The quantum panel shows which engine is answering: **Quantum Rings SDK** or **Mock engine**. If you open `frontend/index.html` straight from disk instead, it calls `http://localhost:5000`. To use another server, add `?api=http://host:port` to the URL.
+
 Terminal demo, no server needed. It shows classical bits being predicted from a brute-forced seed, then quantum bits that can't be predicted, then the stat test:
 ```powershell
 python -m backend.demo       # optional: --n 128
@@ -43,7 +45,12 @@ pytest
 ```
 In mock mode the live Quantum Rings tests are skipped. With `QUANTUM_MODE=quantumrings` and credentials set, they run against the real engine.
 
-## 5. Frontend development without the backend
+## Public deployment
+The public demo runs on a Vultr instance. The steps and the live URL are in [DEPLOY.md](DEPLOY.md).
+
+## 5. Frontend
+The page is plain HTML, CSS and JavaScript with no build step: `frontend/index.html`, `frontend/assets/styles.css` and `frontend/assets/app.js`. Edit a file and reload the browser.
+
 `frontend/mocks/*.json` holds sample responses in exactly the contract's shape.
 
 ## 6. Quantum Rings setup

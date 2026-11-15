@@ -43,8 +43,8 @@ def runs(bits: list[int]) -> float:
     pi = sum(bits) / n
     # Prerequisite: if the 0/1 balance is already far off, the test is not
     # applicable and NIST says to report p = 0.
-    if abs(pi - 0.5) >= 2 / math.sqrt(n):
-        return 0.0
+    if abs(pi - 0.5) >= 2 / math.sqrt(n) or pi in (0, 1):
+        return 0.0  # pi of 0 or 1 (all one value) would also divide by zero below
     v_obs = 1 + sum(bits[i] != bits[i + 1] for i in range(n - 1))
     expected = 2 * n * pi * (1 - pi)
     return math.erfc(abs(v_obs - expected) / (2 * math.sqrt(2 * n) * pi * (1 - pi)))

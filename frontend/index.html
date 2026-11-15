@@ -1,0 +1,692 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QuantumFair — classical vs quantum randomness</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;family=Newsreader:opsz,wght@6..72,400..600&amp;display=swap">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<div style="background:#150B0A; color:#F4EFE4; font-family:'Inter',system-ui,sans-serif; overflow-x:clip">
+
+<nav class="rail" aria-label="Chapters">
+  <a href="#top" aria-label="Opening" title="Opening"><i></i></a>
+  <a href="#crack" aria-label="The crack" title="The crack"><i></i></a>
+  <a href="#stakes" aria-label="The stakes" title="The stakes"><i></i></a>
+  <a href="#fix" aria-label="The turn" title="The turn"><i></i></a>
+  <a href="#demo" aria-label="Live demo" title="Live demo"><i></i></a>
+  <a href="#deployed" aria-label="Deployed today" title="Deployed today"><i></i></a>
+</nav>
+
+<!-- ============ Opening ============ -->
+<section id="top" class="t-open">
+<div class="pin-view" style="background:#150B0A">
+  <header style="position:relative; z-index:3">
+    <div style="max-width:1296px; margin:0 auto; padding:18px clamp(20px,5vw,72px); display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px 24px">
+      <a href="#top" style="display:flex; align-items:center; gap:10px; text-decoration:none">
+        <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="11.5" fill="none" stroke="currentColor" stroke-width="1.5"></circle><path d="M13 1.5a11.5 11.5 0 0 1 0 23z" fill="currentColor"></path></svg>
+        <span style="font-family:'Newsreader',Georgia,serif; font-weight:500; font-size:22px; letter-spacing:-0.01em">QuantumFair</span>
+      </a>
+      <nav aria-label="Sections" style="display:flex; flex-wrap:wrap; gap:4px 22px; font-size:14px">
+        <a href="#crack" class="nl">The crack</a>
+        <a href="#stakes" class="nl">Stakes</a>
+        <a href="#fix" class="nl">The fix</a>
+        <a href="#demo" class="nl">Live demo</a>
+        <a href="#deployed" class="nl">Deployed</a>
+      </nav>
+      <div style="display:flex; align-items:center; gap:10px">
+        <button type="button" id="btn-motion" class="btn" style="min-height:44px; padding:0 16px; border-radius:999px; border:1px solid #7A6A61; background:transparent; color:#F4EFE4; font-family:'Inter',system-ui,sans-serif; font-weight:500; font-size:14px; cursor:pointer">Pause motion</button>
+        <a href="#demo" class="btn" style="display:inline-flex; align-items:center; min-height:44px; padding:0 18px; border-radius:999px; background:#F4EFE4; color:#150B0A; font-weight:600; font-size:14px; text-decoration:none">Run the demo</a>
+      </div>
+    </div>
+  </header>
+  <div id="o-text" class="o-text" style="position:relative; z-index:2; max-width:1240px; margin:0 auto; padding:clamp(10px,1.8vw,26px) 20px 0; text-align:center">
+    <p style="margin:0; font-size:14px; font-weight:500; color:#D9B26A">QuantumFair · Quantum Leap track</p>
+    <h1 style="margin:14px 0 0; font-family:'Newsreader',Georgia,serif; font-weight:400; font-size:clamp(36px,4.9vw,72px); line-height:1.02; letter-spacing:-0.035em"><span style="display:block">Classical randomness can be cracked.</span><span style="display:block">Quantum randomness can’t.</span></h1>
+    <p style="margin:20px auto 0; max-width:660px; font-size:clamp(15px,1.25vw,17px); line-height:1.6; color:#CDBEB3">One seed replays a generator’s “luck” forever. A measured qubit has no seed.</p>
+    <div style="margin-top:22px; display:flex; flex-wrap:wrap; justify-content:center; gap:12px">
+      <a href="#demo" class="btn" style="display:inline-flex; align-items:center; gap:10px; min-height:48px; padding:0 22px; border-radius:999px; background:#F4EFE4; color:#150B0A; font-weight:600; font-size:15px; text-decoration:none">Run the live demo
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2v11M3.5 8.5 8 13l4.5-4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </a>
+      <a href="#crack" class="btn" style="display:inline-flex; align-items:center; min-height:48px; padding:0 22px; border-radius:999px; border:1px solid #7A6A61; font-weight:500; font-size:15px; text-decoration:none">See the exploit</a>
+    </div>
+  </div>
+  <div class="o-stage" aria-hidden="true">
+    <div id="o-move" class="o-move">
+      <div class="o-rot">
+        <div class="m">
+          <div class="m-face m-back"></div>
+          <div class="m-face m-left"></div>
+          <div class="m-face m-right"></div>
+          <div class="m-face m-top"></div>
+          <div class="reel r0 hr0" data-faces></div>
+          <div class="reel r1 hr1" data-faces></div>
+          <div class="reel r2 hr2" data-faces></div>
+          <div class="m-front">
+            <div class="mf mf-top"></div>
+            <div class="mq">
+              <div class="bulbs chase-slow" data-bulbs="slow"></div>
+              <p class="mq-t">LUCKY SEED</p>
+              <div class="bulbs chase-slow" data-bulbs="slow"></div>
+            </div>
+            <div class="mf mf-pl"></div>
+            <div class="mf mf-pr"></div>
+            <div class="mf mf-d1"></div>
+            <div class="mf mf-d2"></div>
+            <div class="mf mf-sh mf-sh1"></div>
+            <div class="mf mf-sh mf-sh2"></div>
+            <div class="mf mf-line"></div>
+            <div class="mf mf-bot"></div>
+            <div class="mf mf-tray"></div>
+          </div>
+          <div class="lv">
+            <div class="lv-hub"></div>
+            <div class="lv-ax"></div>
+            <div class="lv-ax b"></div>
+            <div class="lv-arm">
+              <div class="lv-rod"></div>
+              <div class="lv-rod b"></div>
+              <div class="lv-knob"></div>
+              <div class="lv-knob b"></div>
+              <div class="lv-knob c"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<section style="background:#150B0A">
+  <div class="sec" style="max-width:1296px; margin:0 auto; padding:clamp(36px,4vw,56px) clamp(20px,5vw,72px) clamp(48px,5vw,72px); display:flex; flex-wrap:wrap; gap:0 40px">
+    <div data-rv="1" style="flex:1 1 240px; border-top:1px solid #4A3A34; padding:20px 0 12px">
+      <p style="margin:0; font-family:'Newsreader',Georgia,serif; font-weight:400; font-size:clamp(40px,4.2vw,60px); letter-spacing:-0.03em; line-height:1">1 seed</p>
+      <p style="margin:12px 0 0; font-size:15px; line-height:1.55; color:#CDBEB3; max-width:30ch">replays every spin and every key.</p>
+    </div>
+    <div data-rv="1" class="d1" style="flex:1 1 240px; border-top:1px solid #4A3A34; padding:20px 0 12px">
+      <p style="margin:0; font-family:'Newsreader',Georgia,serif; font-weight:400; font-size:clamp(40px,4.2vw,60px); letter-spacing:-0.03em; line-height:1">32,768</p>
+      <p style="margin:12px 0 0; font-size:15px; line-height:1.55; color:#CDBEB3; max-width:30ch">possible keys after Debian’s OpenSSL bug.</p>
+    </div>
+    <div data-rv="1" class="d2" style="flex:1 1 240px; border-top:1px solid #4A3A34; padding:20px 0 12px">
+      <p style="margin:0; font-family:'Newsreader',Georgia,serif; font-weight:400; font-size:clamp(40px,4.2vw,60px); letter-spacing:-0.03em; line-height:1">0 seeds</p>
+      <p style="margin:12px 0 0; font-size:15px; line-height:1.55; color:#CDBEB3; max-width:30ch">behind a qubit. Nothing to steal.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ The crack (the problem) ============ -->
+<section id="crack" style="background:#6B1410; color:#F4EFE4">
+  <div class="sec" style="max-width:1296px; margin:0 auto; padding:clamp(40px,5vw,64px) clamp(20px,5vw,72px) clamp(48px,5.5vw,72px)">
+    <div style="display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:8px 24px">
+      <p style="margin:0; font-family:'Newsreader',Georgia,serif; font-weight:400; font-size:clamp(56px,10.4vw,156px); line-height:.9; letter-spacing:-0.045em">The crack</p>
+      <p style="margin:0 0 1.2em; font-size:13px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:#E7C777">Classical PRNGs</p>
+    </div>
+    <div id="crack-scene" style="margin-top:clamp(24px,3vw,40px); display:flex; flex-wrap:wrap; align-items:center; gap:40px 64px">
+      <div style="flex:1 1 420px; min-width:0">
+        <h2 style="margin:0; max-width:14em; font-family:'Newsreader',Georgia,serif; font-weight:400; font-size:clamp(30px,3.5vw,52px); line-height:1.06; letter-spacing:-0.03em">A pseudo-random number is a formula in disguise.</h2>
+        <p style="margin:22px 0 0; max-width:580px; font-size:17px; line-height:1.65; color:#EBD5CC">Same seed, same numbers. Learn the seed and you see every result before it happens.</p>
+      </div>
+      <div style="flex:1 1 360px; min-width:0">
+        <div aria-hidden="true" id="c-wrap" class="c-wrap" style="height:22em; perspective:1300px; font-size:clamp(7px,1.05vw,15px); display:flex; align-items:center; justify-content:center">
+          <div class="c-rot">
+            <div class="axle"></div>
+            <div class="axle b"></div>
+            <div class="reel r0 c0" data-faces><div class="cap l"></div><div class="cap r"></div></div>
+            <div class="reel r1 c1" data-faces><div class="cap l"></div><div class="cap r"></div></div>
+            <div class="reel r2 c2" data-faces><div class="cap l"></div><div class="cap r"></div></div>
+          </div>
+        </div>
+        <p style="margin:8px auto 0; max-width:440px; text-align:center; font-size:14px; line-height:1.55; color:#EBD5CC">Drag to spin.<span class="scroll-inline"> Scroll back and they land on the same digits.</span></p>
+      </div>
+    </div>
+
+    <div style="margin-top:clamp(32px,4vw,52px); display:flex; flex-wrap:wrap; gap:20px">
+      <div data-rv="1" style="flex:1 1 380px; min-width:0; border-radius:6px; padding:clamp(20px,2.6vw,32px); background:#F4EFE4; color:#1C1512">
+        <p style="margin:0; font-size:14px; font-weight:600">The whole generator</p>
+        <p style="margin:18px 0 0; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:clamp(15px,1.55vw,21px); line-height:1.5">rng = random.Random(seed)<br>bit = rng.getrandbits(1)</p>
+        <p style="margin:18px 0 0; font-size:15px; line-height:1.6; color:#5B4F47">The classical side of our backend: Python’s Mersenne Twister with a 4-digit seed. It looks random. It is arithmetic.</p>
+      </div>
+      <div data-rv="1" class="d1" style="flex:1 1 380px; min-width:0; border-radius:6px; padding:clamp(20px,2.6vw,32px); background:#F4EFE4; color:#1C1512">
+        <div style="display:flex; flex-wrap:wrap; align-items:flex-end; gap:8px 10px">
+          <div style="flex:1 1 180px; min-width:0">
+            <label for="crack-seed" style="display:block; font-size:14px; font-weight:600">Pick a seed from 0 to 9,999. Pull three times.</label>
+            <input id="crack-seed" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" value="1337" style="margin-top:6px; width:100%; box-sizing:border-box; min-height:44px; padding:0 12px; border:1px solid #B7AB97; border-radius:6px; background:#FFFDF8; color:#1C1512; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:16px">
+          </div>
+          <button type="button" id="crack-random" class="btn" style="min-height:44px; padding:0 16px; border-radius:999px; border:1px solid #1C1512; background:transparent; color:#1C1512; font-family:'Inter',system-ui,sans-serif; font-weight:600; font-size:14px; cursor:pointer">Random seed</button>
+        </div>
+        <div id="crack-runs" style="margin-top:16px; display:flex; flex-direction:column; gap:8px"></div>
+        <p id="crack-note" role="status" style="margin:16px 0 0; font-size:15px; line-height:1.6; color:#5B4F47">Same seed, identical reels.</p>
+      </div>
+    </div>
+
+    <div style="margin-top:clamp(40px,4.5vw,60px)">
+      <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:baseline; gap:8px 16px">
+        <h3 style="margin:0; font-family:'Newsreader',Georgia,serif; font-weight:400; font-size:clamp(24px,2.4vw,34px); letter-spacing:-0.02em">How the Novomatic slot exploit worked</h3>
+        <span style="font-size:14px; color:#EBD5CC">Five steps · no tampering</span>
+      </div>
+      <ol style="margin:28px 0 0; padding:0; list-style:none; display:flex; flex-wrap:wrap; gap:16px 24px">
+        <li data-rv="1" style="flex:1 1 180px; min-width:0; border-top:1px solid #B5564B; padding-top:14px">
+          <span style="font-family:'Newsreader',Georgia,serif; font-size:36px; line-height:1">1</span>
+          <p style="margin:10px 0 0; font-weight:600; font-size:18px">Observe</p>
+          <p style="margin:6px 0 0; font-size:15px; line-height:1.55; color:#EBD5CC">Film a few dozen spins.</p>
+        </li>
+        <li data-rv="1" class="d1" style="flex:1 1 180px; min-width:0; border-top:1px solid #B5564B; padding-top:14px">
+          <span style="font-family:'Newsreader',Georgia,serif; font-size:36px; line-height:1">2</span>
+          <p style="margin:10px 0 0; font-weight:600; font-size:18px">Reconstruct</p>
+          <p style="margin:6px 0 0; font-size:15px; line-height:1.55; color:#EBD5CC">Recover the PRNG’s state from them.</p>
+        </li>
+        <li data-rv="1" class="d2" style="flex:1 1 180px; min-width:0; border-top:1px solid #B5564B; padding-top:14px">
+          <span style="font-family:'Newsreader',Georgia,serif; font-size:36px; line-height:1">3</span>
+          <p style="margin:10px 0 0; font-weight:600; font-size:18px">Predict</p>
+          <p style="margin:6px 0 0; font-size:15px; line-height:1.55; color:#EBD5CC">Compute the next spins.</p>
+        </li>
+        <li data-rv="1" class="d3" style="flex:1 1 180px; min-width:0; border-top:1px solid #B5564B; padding-top:14px">
+          <span style="font-family:'Newsreader',Georgia,serif; font-size:36px; line-height:1">4</span>
+          <p style="margin:10px 0 0; font-weight:600; font-size:18px">Cue</p>
+          <p style="margin:6px 0 0; font-size:15px; line-height:1.55; color:#EBD5CC">A phone buzzes before a win.</p>
+        </li>
+        <li data-rv="1" class="d4" style="flex:1 1 180px; min-width:0; border-top:1px solid #E7C777; padding-top:14px; color:#E7C777">
+          <span style="font-family:'Newsreader',Georgia,serif; font-size:36px; line-height:1">5</span>
+          <p style="margin:10px 0 0; font-weight:600; font-size:18px">Collect</p>
+          <p style="margin:6px 0 0; font-size:15px; line-height:1.55; color:#EBD5CC">Press. The machine pays.</p>
+        </li>
+      </ol>
+      <p style="margin:28px 0 0; font-size:13px; line-height:1.6; color:#EBD5CC">Source: WIRED, “Russians Engineer a Brilliant Slot Machine Cheat — And Casinos Have No Fix,” 2017.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ The stakes ============ -->
+<section id="stakes" style="background:#14382D; color:#F4EFE4">
+  <div class="sec" style="max-width:1296px; margin:0 auto; padding:clamp(40px,5vw,64px) clamp(20px,5vw,72px) clamp(48px,5.5vw,72px)">
+    <div style="display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:8px 24px">
+      <p style="margin:0; font-family:'Newsreader',Georgia,serif; font-weight:400; font-size:clamp(56px,10.4vw,156px); line-height:.9; letter-spacing:-0.045em">The stakes</p>
+      <p style="margin:0 0 1.2em; font-size:13px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:#E7C777">Casinos · cryptography</p>
+    </div>
+    <h2 style="margin:clamp(24px,3vw,40px) 0 0; max-width:14em; font-family:'Newsreader',Georgia,serif; font-weight:400; font-size:clamp(30px,3.5vw,52px); line-height:1.06; letter-spacing:-0.03em">Same flaw. Bigger jackpots.</h2>
+    <p style="margin:22px 0 0; max-width:640px; font-size:17px; line-height:1.65; color:#CFE0D6">Every encryption key starts as a random number. A predictable number means a predictable key.</p>
+
+    <div style="margin-top:clamp(32px,3.5vw,48px); display:flex; flex-wrap:wrap; gap:24px 32px">
+      <article data-rv="1" style="flex:1 1 240px; min-width:0; display:flex; flex-direction:column; border-top:1px solid #4C7667; padding-top:16px">
+        <p style="margin:0; font-size:14px; font-weight:600">Casino floor</p>
+        <p style="margin:18px 0 0; font-family:'Newsreader',Georgia,serif; font-weight:400; font-size:clamp(34px,3.4vw,48px); letter-spacing:-0.03em; line-height:1">Novomatic</p>
+        <p style="margin:14px 0 0; font-size:15px; line-height:1.6; color:#CFE0D6; flex:1 1 auto">A Russian group cracked the slot PRNG and timed wins in live casinos.</p>
+        <p style="margin:18px 0 0; font-size:13px; color:#CFE0D6">WIRED, 2017</p>
+      </article>
+      <article data-rv="1" class="d1" style="flex:1 1 240px; min-width:0; display:flex; flex-direction:column; border-top:1px solid #4C7667; padding-top:16px">
+        <p style="margin:0; font-size:14px; font-weight:600">Server keys</p>
+        <p style="margin:18px 0 0; font-family:'Newsreader',Georgia,serif; font-weight:400; font-size:clamp(34px,3.4vw,48px); letter-spacing:-0.03em; line-height:1">32,768</p>
+        <p style="margin:14px 0 0; font-size:15px; line-height:1.6; color:#CFE0D6; flex:1 1 auto">A Debian patch seeded OpenSSL from the process ID. Every key came from a tiny, guessable set.</p>
+        <p style="margin:18px 0 0; font-size:13px; color:#CFE0D6">CVE-2008-0166</p>
+      </article>
+      <article data-rv="1" class="d2" style="flex:1 1 240px; min-width:0; display:flex; flex-direction:column; border-top:1px solid #4C7667; padding-top:16px">
+        <p style="margin:0; font-size:14px; font-weight:600">Crypto wallets</p>
+        <p style="margin:18px 0 0; font-family:'Newsreader',Georgia,serif; font-weight:400; font-size:clamp(34px,3.4vw,48px); letter-spacing:-0.03em; line-height:1">2013</p>
+        <p style="margin:14px 0 0; font-size:15px; line-height:1.6; color:#CFE0D6; flex:1 1 auto">Android’s SecureRandom repeated values in Bitcoin signatures. Attackers took the keys and the coins.</p>
+        <p style="margin:18px 0 0; font-size:13px; color:#CFE0D6">Bitcoin.org advisory, Aug 2013</p>
+      </article>
+      <article data-rv="1" class="d3" style="flex:1 1 240px; min-width:0; display:flex; flex-direction:column; border-top:1px solid #4C7667; padding-top:16px">
+        <p style="margin:0; font-size:14px; font-weight:600">Web encryption</p>
+        <p style="margin:18px 0 0; font-family:'Newsreader',Georgia,serif; font-weight:400; font-size:clamp(34px,3.4vw,48px); letter-spacing:-0.03em; line-height:1">1995</p>
+        <p style="margin:14px 0 0; font-size:15px; line-height:1.6; color:#CFE0D6; flex:1 1 auto">Netscape seeded SSL keys from the clock and process IDs. Goldberg and Wagner rebuilt them.</p>
+        <p style="margin:18px 0 0; font-size:13px; color:#CFE0D6">Dr. Dobb’s Journal, 1996</p>
+      </article>
+    </div>
+    <p style="margin:clamp(32px,3.5vw,48px) 0 0; max-width:880px; font-family:'Newsreader',Georgia,serif; font-weight:400; font-size:clamp(22px,2.4vw,34px); line-height:1.25; letter-spacing:-0.02em">One root cause: the output came from something an attacker could recover.</p>
+  </div>
+</section>
+
+<!-- ============ The turn (the solution) ============ -->
+<section id="fix" class="t-turn on-light" style="background:#E4ECEC; color:#0E1A1C">
+<div class="pin-view">
+  <div style="flex:1 1 auto; min-width:0; max-width:1296px; margin:0 auto; padding:clamp(40px,4.5vw,64px) clamp(20px,5vw,72px); display:flex; flex-wrap:wrap; align-items:center; gap:40px 56px">
+    <div style="flex:1 1 440px; min-width:0">
+      <div style="display:flex; flex-wrap:wrap; align-items:flex-end; gap:8px 24px">
+        <p style="margin:0; font-family:'Newsreader',Georgia,serif; font-weight:400; font-size:clamp(60px,8.6vw,132px); line-height:.9; letter-spacing:-0.045em">The turn</p>
+        <p style="margin:0 0 1em; font-size:13px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:#0A625F">Quantum randomness</p>
+      </div>
+      <h2 style="margin:clamp(18px,2vw,28px) 0 0; max-width:13em; font-family:'Newsreader',Georgia,serif; font-weight:400; font-size:clamp(30px,3.3vw,48px); line-height:1.06; letter-spacing:-0.03em">Don’t hide the seed. Remove it.</h2>
+      <p style="margin:16px 0 0; max-width:560px; font-size:17px; line-height:1.6; color:#33474A">A measurement isn’t computed. Its outcome doesn’t exist until it happens, so there’s no seed to steal.</p>
+      <p style="margin:clamp(18px,2vw,28px) 0 0; font-size:14px; font-weight:600">The whole generator<span style="font-weight:400; color:#33474A"> · click a step</span></p>
+      <ol style="margin:12px 0 0; padding:0; list-style:none; display:flex; flex-direction:column; gap:8px; font-size:16px; line-height:1.45">
+        <li class="beat on" data-beat="0"><button type="button" class="stepb" data-go="0"><span class="stepn">1</span><span>Start in a known state: 0.</span></button></li>
+        <li class="beat on" data-beat="1"><button type="button" class="stepb" data-go="1"><span class="stepn">2</span><span>Hadamard gate: an equal mix of 0 and 1.</span></button></li>
+        <li class="beat on" data-beat="2"><button type="button" class="stepb" data-go="2"><span class="stepn">3</span><span>Measure: the qubit picks a side.</span></button></li>
+        <li class="beat on" data-beat="3"><button type="button" class="stepb" data-go="3"><span class="stepn">4</span><span>One bit nobody could have predicted.</span></button>
+          <div id="t-bit" hidden style="margin:6px 0 0 calc(1.2em + 12px); display:flex; flex-wrap:wrap; align-items:center; gap:8px 14px">
+            <span id="t-bit-text"></span>
+            <button type="button" id="btn-tagain" class="btn" style="min-height:40px; padding:0 16px; border-radius:999px; border:1px solid #0A625F; background:#0A625F; color:#FFFFFF; font-family:'Inter',system-ui,sans-serif; font-weight:600; font-size:14px; cursor:pointer">Measure a fresh qubit</button>
+          </div>
+        </li>
+      </ol>
+    </div>
+    <div style="flex:1 1 340px; min-width:0; display:flex; flex-direction:column; align-items:center">
+      <div aria-hidden="true" style="position:relative; perspective:1200px; font-size:clamp(8px,1.3vw,19px); padding:max(3.4em,38px) 2em">
+        <span style="position:absolute; left:50%; top:.4em; transform:translateX(-50%); font-family:'JetBrains Mono',ui-monospace,monospace; font-size:16px">|0⟩</span>
+        <div class="q"><div class="q-spin" data-sphere><div id="t-arrow" class="q-arrow t-arr" data-arrow></div></div></div>
+        <span style="position:absolute; left:50%; bottom:.4em; transform:translateX(-50%); font-family:'JetBrains Mono',ui-monospace,monospace; font-size:16px">|1⟩</span>
+      </div>
+      <p id="t-ket" role="status" style="margin:4px 0 0; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:15px; color:#0A625F">|ψ⟩ = 0.707 |0⟩ + 0.707 |1⟩</p>
+      <p id="t-src" style="margin:6px 0 0; font-size:13px; color:#33474A"></p>
+    </div>
+  </div>
+</div>
+</section>
+
+<section class="on-light" style="background:#E4ECEC; color:#0E1A1C">
+  <div class="sec" style="max-width:1296px; margin:0 auto; padding:clamp(20px,2.5vw,32px) clamp(20px,5vw,72px) clamp(48px,5.5vw,72px)">
+    <div style="display:flex; flex-wrap:wrap; gap:20px">
+      <div data-rv="1" style="flex:1 1 380px; min-width:0; border-radius:6px; padding:clamp(20px,2.6vw,32px); background:#150B0A; color:#F4EFE4">
+        <p style="margin:0; font-size:14px; font-weight:600">Classical</p>
+        <p style="margin:18px 0 0; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:clamp(21px,2.3vw,31px); color:#E7C777">output = f(seed)</p>
+        <p style="margin:16px 0 0; font-size:15px; line-height:1.6; color:#CDBEB3">Hide the seed better and the attack gets harder, never impossible.</p>
+      </div>
+      <div data-rv="1" class="d1" style="flex:1 1 380px; min-width:0; border-radius:6px; padding:clamp(20px,2.6vw,32px); background:#FBFDFD; color:#0E1A1C">
+        <p style="margin:0; font-size:14px; font-weight:600">Quantum</p>
+        <p style="margin:18px 0 0; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:clamp(21px,2.3vw,31px); color:#0A625F">outcome = measure(H|0⟩)</p>
+        <p style="margin:16px 0 0; font-size:15px; line-height:1.6; color:#33474A">A Hadamard gate makes an equal mix of 0 and 1. Measuring it gives a bit nobody could know in advance.</p>
+      </div>
+    </div>
+
+    <blockquote data-rv="1" style="margin:clamp(40px,4.5vw,60px) 0 0; padding:0; max-width:1040px">
+      <p style="margin:0; font-family:'Newsreader',Georgia,serif; font-weight:400; font-size:clamp(24px,2.5vw,36px); line-height:1.25; letter-spacing:-0.02em">“A qubit can be 0 and 1 at once. Measure it and it picks a side, undetermined until that exact moment.”</p>
+      <footer style="margin-top:18px; font-size:15px; line-height:1.5; color:#33474A">Why a qubit isn’t a coin flip</footer>
+    </blockquote>
+
+    <div style="margin-top:clamp(32px,4vw,52px); overflow-x:auto">
+      <table style="width:100%; min-width:600px; border-collapse:collapse; font-size:15px; text-align:left">
+        <thead>
+          <tr style="border-bottom:1px solid #0E1A1C">
+            <th scope="col" style="padding:14px 20px 14px 0; font-size:14px; font-weight:600">Property</th>
+            <th scope="col" style="padding:14px 20px; font-size:14px; font-weight:600; color:#8E1D16">Classical PRNG</th>
+            <th scope="col" style="padding:14px 0 14px 20px; font-size:14px; font-weight:600; color:#0A625F">Quantum measurement</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid #B9CACB">
+            <th scope="row" style="padding:14px 20px 14px 0; font-weight:500">Where the number comes from</th>
+            <td style="padding:14px 20px; color:#33474A">A formula applied to stored state</td>
+            <td style="padding:14px 0 14px 20px; color:#33474A">A measurement of a qubit</td>
+          </tr>
+          <tr style="border-bottom:1px solid #B9CACB">
+            <th scope="row" style="padding:14px 20px 14px 0; font-weight:500">Seed</th>
+            <td style="padding:14px 20px; color:#33474A">Yes — in this demo, a 4-digit number</td>
+            <td style="padding:14px 0 14px 20px; color:#33474A">None</td>
+          </tr>
+          <tr style="border-bottom:1px solid #B9CACB">
+            <th scope="row" style="padding:14px 20px 14px 0; font-weight:500">Same input, same output?</th>
+            <td style="padding:14px 20px; font-weight:600; color:#8E1D16">Always</td>
+            <td style="padding:14px 0 14px 20px; font-weight:600; color:#0A625F">There is no input</td>
+          </tr>
+          <tr style="border-bottom:1px solid #B9CACB">
+            <th scope="row" style="padding:14px 20px 14px 0; font-weight:500">Passes statistical tests?</th>
+            <td style="padding:14px 20px; color:#33474A">Yes</td>
+            <td style="padding:14px 0 14px 20px; color:#33474A">Yes</td>
+          </tr>
+          <tr>
+            <th scope="row" style="padding:14px 20px 14px 0; font-weight:500">Predictable if the state leaks?</th>
+            <td style="padding:14px 20px; font-weight:600; color:#8E1D16">Completely</td>
+            <td style="padding:14px 0 14px 20px; font-weight:600; color:#0A625F">There’s no state to leak</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="margin:24px 0 0; max-width:760px; font-size:15px; line-height:1.65; color:#33474A"><span style="color:#0E1A1C; font-weight:600">Could a seed hide inside the qubit?</span> Bell tests (2022 Nobel Prize in Physics) rule out local hidden variables.</p>
+  </div>
+</section>
+
+<!-- ============ Live demo: every bit comes from the backend ============ -->
+<section id="demo" style="background:#150B0A; color:#F4EFE4">
+  <div class="sec" style="max-width:1296px; margin:0 auto; padding:clamp(40px,5vw,64px) clamp(20px,5vw,72px) clamp(28px,3.5vw,44px)">
+    <div style="display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:8px 24px">
+      <p style="margin:0; font-family:'Newsreader',Georgia,serif; font-weight:400; font-size:clamp(56px,10.4vw,156px); line-height:.9; letter-spacing:-0.045em">Live demo</p>
+      <p style="margin:0 0 1.2em; font-size:13px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:#E7C777">Interactive · Quantum Rings SDK</p>
+    </div>
+    <h2 style="margin:clamp(24px,3vw,40px) 0 0; max-width:20em; font-family:'Newsreader',Georgia,serif; font-weight:400; font-size:clamp(30px,3.5vw,52px); line-height:1.06; letter-spacing:-0.03em">Pull the lever. Then try to pull it again.</h2>
+    <p style="margin:22px 0 0; max-width:860px; font-size:17px; line-height:1.65; color:#CDBEB3">One slot machine, two sources of luck. The switch picks what spins the reels: our backend’s seeded PRNG, or qubits measured through the Quantum Rings SDK. Spin, then replay. Do it on both sides of the switch, then attack both runs.</p>
+    <div id="api-banner" class="api-banner" role="alert" hidden>
+      <span><strong>Can’t reach the QuantumFair API</strong> at <code id="api-url"></code>. Start it with <code>python -m backend.app</code>, then retry.</span>
+      <button type="button" id="api-retry" class="btn" style="min-height:40px; padding:0 16px; border-radius:999px; border:1px solid #5A0F0C; background:transparent; color:#5A0F0C; font-family:'Inter',system-ui,sans-serif; font-weight:600; font-size:14px; cursor:pointer">Retry</button>
+    </div>
+    <div role="group" aria-label="Bits per run" style="margin-top:24px; display:flex; flex-wrap:wrap; align-items:center; gap:8px 12px">
+      <span style="font-size:14px; color:#CDBEB3">Bits per run</span>
+      <div style="display:flex; gap:6px">
+        <button type="button" class="btn shots" data-shots="64" style="min-height:40px; padding:0 16px; border-radius:999px; border:1px solid #6A5148; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:14px; cursor:pointer">64</button>
+        <button type="button" class="btn shots" data-shots="256" style="min-height:40px; padding:0 16px; border-radius:999px; border:1px solid #6A5148; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:14px; cursor:pointer">256</button>
+        <button type="button" class="btn shots" data-shots="1024" style="min-height:40px; padding:0 16px; border-radius:999px; border:1px solid #6A5148; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:14px; cursor:pointer">1,024</button>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex; flex-wrap:wrap">
+    <!-- The machine: one slot machine, two sources of luck -->
+    <div style="flex:1 1 480px; min-width:0; display:flex; justify-content:flex-end; border-top:1px solid #4A3A34">
+      <div style="width:100%; max-width:720px; box-sizing:border-box; padding:clamp(28px,3vw,40px) clamp(20px,4vw,56px) clamp(32px,3.5vw,48px) clamp(20px,5vw,72px)">
+        <p style="margin:0; font-size:14px; color:#CDBEB3">One machine · <span id="m-endpoint" style="font-family:'JetBrains Mono',ui-monospace,monospace">/classical-draw</span></p>
+        <h3 style="margin:6px 0 0; font-family:'Newsreader',Georgia,serif; font-weight:400; font-size:clamp(26px,2.4vw,34px); letter-spacing:-0.02em">The slot machine</h3>
+
+        <div class="src-switch" role="radiogroup" aria-label="What spins the reels" style="margin-top:16px">
+          <button type="button" role="radio" class="src-opt" data-src="classical" aria-checked="true">
+            <span class="src-k">Seeded PRNG</span><span class="src-v">random.Random(seed)</span>
+          </button>
+          <button type="button" role="radio" class="src-opt" data-src="quantum" aria-checked="false">
+            <span class="src-k">Quantum draw</span><span class="src-v">Quantum Rings qubits</span>
+          </button>
+        </div>
+
+        <div id="orbit" class="orbit" style="perspective:1400px; font-size:clamp(6.5px,.8vw,11px); display:flex; justify-content:center; padding:3.5em 6em 6.5em 0">
+          <div class="d-rot">
+            <div class="m" id="machine">
+              <div class="m-face m-back"></div>
+              <div class="m-face m-left"></div>
+              <div class="m-face m-right"></div>
+              <div class="m-face m-top"></div>
+              <div class="reel r0" id="reel-0" aria-hidden="true" data-faces style="transform:translateZ(-0.8em) rotateX(-252deg)"></div>
+              <div class="reel r1" id="reel-1" aria-hidden="true" data-faces style="transform:translateZ(-0.8em) rotateX(-252deg)"></div>
+              <div class="reel r2" id="reel-2" aria-hidden="true" data-faces style="transform:translateZ(-0.8em) rotateX(-252deg)"></div>
+              <div class="m-front">
+                <div class="mf mf-top"></div>
+                <div class="mq">
+                  <div class="bulbs demo-bulbs" data-bulbs="fast" aria-hidden="true"></div>
+                  <p class="mq-t" id="m-marquee">LUCKY SEED</p>
+                  <div class="bulbs demo-bulbs" data-bulbs="fast" aria-hidden="true"></div>
+                </div>
+                <div class="mf mf-pl"></div>
+                <div class="mf mf-pr"></div>
+                <div class="mf mf-d1"></div>
+                <div class="mf mf-d2"></div>
+                <div class="mf mf-sh mf-sh1"></div>
+                <div class="mf mf-sh mf-sh2"></div>
+                <div class="mf mf-line"></div>
+                <div class="mf mf-bot"></div>
+                <div class="mf mf-tray"></div>
+              </div>
+              <div class="lv">
+                <div class="lv-hub"></div>
+                <div class="lv-ax"></div>
+                <div class="lv-ax b"></div>
+                <div class="lv-arm" id="lever-arm">
+                  <div class="lv-rod"></div>
+                  <div class="lv-rod b"></div>
+                  <div class="lv-knob"></div>
+                  <div class="lv-knob b"></div>
+                  <div class="lv-knob c"></div>
+                </div>
+                <button type="button" id="btn-lever" class="lv-hit" aria-label="Pull the lever to spin"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin:-8px 0 16px; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 16px; font-size:13px; color:#CDBEB3">
+          <span>Drag to turn. Pull the lever down.</span>
+          <button type="button" id="btn-reset-view" class="btn" style="min-height:36px; padding:0 14px; border:1px solid #6A5148; border-radius:999px; background:transparent; color:#F4EFE4; font-family:'Inter',system-ui,sans-serif; font-size:13px; cursor:pointer">Reset view</button>
+        </div>
+        <dl style="margin:0; display:flex; flex-wrap:wrap; gap:14px 32px">
+          <div>
+            <dt style="font-size:13px; color:#CDBEB3">Seed</dt>
+            <dd id="c-seed" style="margin:4px 0 0; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:17px; color:#E7C777">— — — —</dd>
+          </div>
+          <div>
+            <dt style="font-size:13px; color:#CDBEB3">Attacker’s prediction</dt>
+            <dd id="c-pred" style="margin:4px 0 0; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:17px; color:#F0A79B">— · — · —</dd>
+          </div>
+          <div>
+            <dt style="font-size:13px; color:#CDBEB3">Payout line</dt>
+            <dd id="c-tray" style="margin:4px 0 0; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:17px">7 · 7 · 7</dd>
+          </div>
+        </dl>
+
+        <div style="margin-top:20px; display:flex; flex-wrap:wrap; gap:10px">
+          <button type="button" id="btn-spin" class="btn" style="flex:1 1 150px; min-height:52px; border:0; border-radius:999px; background:#B3261B; color:#FFF6EC; font-family:'Inter',system-ui,sans-serif; font-weight:600; font-size:16px; cursor:pointer">Spin</button>
+          <button type="button" id="btn-replay" class="btn" disabled style="flex:1 1 150px; min-height:52px; border:0; border-radius:999px; background:#C9973F; color:#1C1512; font-family:'Inter',system-ui,sans-serif; font-weight:600; font-size:16px; cursor:pointer">Replay seed</button>
+        </div>
+
+        <div id="seed-row" style="margin-top:16px; display:flex; flex-wrap:wrap; align-items:flex-end; gap:10px">
+          <div style="flex:1 1 200px; min-width:0">
+            <label for="seed-in" style="display:block; font-size:13px; color:#CDBEB3">Type a seed (0 to 9,999)</label>
+            <input id="seed-in" type="text" inputmode="numeric" autocomplete="off" spellcheck="false" placeholder="4821" style="margin-top:6px; width:100%; box-sizing:border-box; min-height:48px; padding:0 14px; border:1px solid #6A5148; border-radius:8px; background:#221411; color:#F4EFE4; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:16px">
+          </div>
+          <button type="button" id="btn-typed" class="btn" style="flex:0 0 auto; min-height:48px; padding:0 20px; border:1px solid #C9973F; border-radius:999px; background:transparent; color:#E7C777; font-family:'Inter',system-ui,sans-serif; font-weight:600; font-size:15px; cursor:pointer">Spin this seed</button>
+        </div>
+        <p id="no-seed-row" hidden style="margin:16px 0 0; padding:14px 16px; border:1px dashed #6A5148; border-radius:8px; font-size:14px; line-height:1.55; color:#CDBEB3">No seed to type. The reels come from qubits measured as you pull, so there’s no input to guess.</p>
+        <div style="margin-top:14px">
+          <label for="spin-time" style="display:flex; justify-content:space-between; gap:12px; font-size:13px; color:#CDBEB3"><span>Reel spin time</span><span id="spin-time-text" style="font-family:'JetBrains Mono',ui-monospace,monospace">1.2 s</span></label>
+          <input id="spin-time" type="range" min="0.4" max="3" step="0.1" value="1.2" style="width:100%; margin:6px 0 0; accent-color:#C9973F">
+        </div>
+
+        <p id="c-status" role="status" aria-live="polite" style="margin:16px 0 0; min-height:48px; font-size:15px; line-height:1.6; color:#D9CBC1">The server picks a 4-digit seed when you pull.</p>
+      </div>
+    </div>
+
+    <!-- Behind the reels: follows the switch -->
+    <div class="on-light" style="flex:1 1 480px; min-width:0; display:flex; justify-content:flex-start; background:#E4ECEC; color:#0E1A1C">
+      <div style="width:100%; max-width:720px; box-sizing:border-box; padding:clamp(28px,3vw,40px) clamp(20px,5vw,72px) clamp(32px,3.5vw,48px) clamp(20px,4vw,56px)">
+        <p style="margin:0; display:flex; flex-wrap:wrap; align-items:center; gap:6px 8px; font-size:14px; color:#33474A">Behind the reels ·<span id="src-dot" aria-hidden="true" style="width:8px; height:8px; background:#8E1D16"></span><span id="src-pill" style="font-weight:600; color:#8E1D16">Seeded PRNG</span></p>
+        <h3 id="b-title" style="margin:6px 0 0; font-family:'Newsreader',Georgia,serif; font-weight:400; font-size:clamp(26px,2.4vw,34px); letter-spacing:-0.02em">The generator</h3>
+
+        <!-- PRNG view -->
+        <div id="view-classical">
+          <div style="margin-top:18px; border-radius:6px; padding:clamp(20px,2.6vw,28px); background:#150B0A; color:#F4EFE4">
+            <p style="margin:0; font-size:14px; font-weight:600">Everything the reels show comes from one line</p>
+            <p style="margin:16px 0 0; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:clamp(14px,1.35vw,18px); line-height:1.6">rng = random.Random(<span id="g-seed" style="color:#E7C777">seed</span>)<br>bits = [rng.getrandbits(1) for _ in range(<span id="g-n">256</span>)]<br>reels = bits[:30] → 3 digits</p>
+            <p style="margin:16px 0 0; font-size:15px; line-height:1.6; color:#CDBEB3">Python’s Mersenne Twister, seeded with a number from 0 to 9,999. Know the seed and you know every reel and every bit, now and on every replay.</p>
+          </div>
+          <div style="margin-top:18px; border-top:1px solid #B9CACB; padding-top:16px">
+            <p style="margin:0; font-size:14px; font-weight:600">What you’re looking at</p>
+            <p style="margin:8px 0 0; font-size:15px; line-height:1.65; color:#33474A">The output looks random and passes the statistics. Replay the seed and the machine does exactly the same thing again. Then flip the switch to Quantum draw and try the same.</p>
+          </div>
+        </div>
+
+        <!-- Quantum view -->
+        <div id="view-quantum" hidden>
+          <div style="margin-top:8px; display:flex; flex-wrap:wrap; align-items:center; gap:8px 32px">
+            <div aria-hidden="true" id="q-drag" class="q-drag" style="position:relative; flex:none; perspective:1200px; font-size:clamp(6.5px,.72vw,10px); padding:max(3.6em,34px) 2em">
+              <span style="position:absolute; left:50%; top:.2em; transform:translateX(-50%); font-family:'JetBrains Mono',ui-monospace,monospace; font-size:14px">|0⟩</span>
+              <div class="q"><div class="q-spin" data-sphere><div id="q-arrow" class="q-arrow d-arr" data-arrow style="transform:rotateZ(0deg)"></div></div></div>
+              <span style="position:absolute; left:50%; bottom:.2em; transform:translateX(-50%); font-family:'JetBrains Mono',ui-monospace,monospace; font-size:14px">|1⟩</span>
+            </div>
+            <div style="flex:1 1 180px; min-width:0">
+              <p style="margin:0; font-size:13px; color:#33474A">First qubit</p>
+              <p id="q-digit" style="margin:2px 0 0; font-family:'Newsreader',Georgia,serif; font-weight:400; font-size:clamp(72px,7vw,104px); line-height:1; color:#6F8386">?</p>
+              <p id="q-caption" style="margin:6px 0 0; font-size:16px; line-height:1.45">Not decided yet.</p>
+              <p id="q-ket" style="margin:6px 0 0; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:14px; color:#0A625F"></p>
+            </div>
+          </div>
+
+          <div style="margin-top:8px">
+            <div style="display:flex; justify-content:space-between; gap:12px; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:13px">
+              <span style="color:#0A625F">|0⟩ · P = <span id="p0">50.0%</span></span>
+              <span style="color:#3F43B5">P = <span id="p1">50.0%</span> · |1⟩</span>
+            </div>
+            <div id="q-bar" class="bar und" role="img" aria-label="Superposition bar" style="margin-top:8px; height:72px; border-radius:6px; overflow:hidden; display:flex; background:#C8D6D7">
+              <div id="seg0" class="seg s0" style="width:50%">
+                <span style="white-space:nowrap; font-family:'JetBrains Mono',ui-monospace,monospace; font-weight:500; font-size:22px; color:#FFFFFF">|0⟩</span>
+              </div>
+              <div id="seg1" class="seg s1" style="width:50%">
+                <span style="white-space:nowrap; font-family:'JetBrains Mono',ui-monospace,monospace; font-weight:500; font-size:22px; color:#FFFFFF">|1⟩</span>
+              </div>
+            </div>
+            <p id="q-state-src" style="margin:8px 0 0; font-size:13px; line-height:1.5; color:#33474A"></p>
+          </div>
+
+          <div style="margin-top:16px">
+            <label for="theta" style="display:flex; justify-content:space-between; gap:12px; font-size:14px; font-weight:600"><span>Rotation θ</span><span id="theta-text" style="font-family:'JetBrains Mono',ui-monospace,monospace; font-weight:500; color:#0A625F">θ = 90°</span></label>
+            <input id="theta" type="range" min="0" max="180" step="1" value="90" style="width:100%; margin:8px 0 0; accent-color:#0A625F">
+            <div role="group" aria-label="Preset states" style="margin-top:8px; display:flex; flex-wrap:wrap; gap:6px">
+              <button type="button" class="btn th" data-theta="0" style="min-height:40px; padding:0 14px; border-radius:999px; border:1px solid #0A625F; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:13px; cursor:pointer">|0⟩ · 0°</button>
+              <button type="button" class="btn th" data-theta="60" style="min-height:40px; padding:0 14px; border-radius:999px; border:1px solid #0A625F; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:13px; cursor:pointer">60°</button>
+              <button type="button" class="btn th" data-theta="90" style="min-height:40px; padding:0 14px; border-radius:999px; border:1px solid #0A625F; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:13px; cursor:pointer">H · 90°</button>
+              <button type="button" class="btn th" data-theta="180" style="min-height:40px; padding:0 14px; border-radius:999px; border:1px solid #0A625F; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:13px; cursor:pointer">|1⟩ · 180°</button>
+            </div>
+            <p style="margin:8px 0 0; font-size:13px; line-height:1.5; color:#33474A">Or drag the arrow on the sphere. 90° is the Hadamard circuit; anything else runs RY(θ). The next pull uses this circuit.</p>
+          </div>
+        </div>
+
+        <!-- Results for whichever source is switched on -->
+        <div style="margin-top:18px; border-top:1px solid #B9CACB; padding-top:16px">
+          <div style="display:flex; flex-wrap:wrap; justify-content:space-between; gap:6px 12px; font-size:13px">
+            <p style="margin:0; color:#33474A"><span id="stream-label">Output stream</span> · first 64 of <span class="shots-text">256</span> bits</p>
+            <p id="r-match" style="margin:0; font-weight:600; color:#33474A"></p>
+          </div>
+          <div style="margin-top:12px; display:flex; align-items:center; gap:12px">
+            <span style="width:52px; flex:none; font-size:13px; color:#33474A">Run</span>
+            <div aria-hidden="true" class="bits" data-squares="rA"></div>
+          </div>
+          <div style="margin-top:8px; display:flex; align-items:center; gap:12px">
+            <span style="width:52px; flex:none; font-size:13px; color:#33474A">Replay</span>
+            <div aria-hidden="true" class="bits" data-squares="rB"></div>
+          </div>
+          <div style="margin-top:18px; display:flex; flex-direction:column; gap:10px">
+            <div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px; font-size:14px; line-height:1.4">
+              <span style="font-weight:600">Randomness check · NIST monobit + runs</span>
+              <span id="rF-label" class="badge"></span>
+              <span id="rF-detail" style="color:#33474A"></span>
+            </div>
+            <div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px 10px; font-size:14px; line-height:1.4">
+              <span style="font-weight:600">Replay attack · same seed again</span>
+              <span id="rR-label" class="badge"></span>
+              <span id="rR-detail" style="color:#33474A"></span>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:18px; border-top:1px solid #B9CACB; padding-top:14px">
+          <p id="src-line" style="margin:0; font-size:13px; line-height:1.6; font-weight:600; color:#33474A"></p>
+          <p id="src-note" style="margin:6px 0 0; font-size:13px; line-height:1.55; color:#33474A"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- The attack: the backend brute-forces both runs -->
+  <div id="attack" style="background:#0E1A1C; color:#E4ECEC">
+    <div style="max-width:1296px; margin:0 auto; padding:clamp(32px,4vw,56px) clamp(20px,5vw,72px) clamp(8px,1vw,16px)">
+      <div style="display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:16px 40px">
+        <div style="flex:1 1 520px; min-width:0">
+          <p style="margin:0; font-size:14px; font-weight:600; color:#B4C6C8">The attack · <span style="font-family:'JetBrains Mono',ui-monospace,monospace; font-weight:400">/attack</span></p>
+          <h3 style="margin:10px 0 0; font-family:'Newsreader',Georgia,serif; font-weight:400; font-size:clamp(26px,3vw,42px); line-height:1.12; letter-spacing:-0.025em">See half the bits. Predict the other half.</h3>
+          <p style="margin:12px 0 0; max-width:660px; font-size:15px; line-height:1.6; color:#B4C6C8">The server gets the first half of your last PRNG spin and your last quantum spin, tries all <span class="seed-space">10,000</span> seeds, and predicts the rest. It isn’t told which side the bits came from.</p>
+        </div>
+        <button type="button" id="btn-attack" class="btn" disabled style="flex:0 0 auto; min-height:52px; padding:0 24px; border:0; border-radius:999px; background:#E4ECEC; color:#0E1A1C; font-family:'Inter',system-ui,sans-serif; font-weight:600; font-size:16px; cursor:pointer">Attack both runs</button>
+      </div>
+      <p id="attack-status" role="status" aria-live="polite" style="margin:16px 0 0; font-size:15px; line-height:1.6; color:#B4C6C8">Spin once with the switch on Seeded PRNG and once on Quantum draw.</p>
+      <div style="margin-top:20px; display:flex; flex-wrap:wrap; gap:24px 56px">
+        <div style="flex:1 1 380px; min-width:0; border-top:1px solid #2C3F42; padding-top:16px">
+          <p style="margin:0; font-size:13px; color:#B4C6C8">Seeded PRNG · hidden bits predicted</p>
+          <p id="atk-c-big" style="margin:6px 0 0; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:clamp(28px,3vw,40px); color:#B4C6C8">—</p>
+          <p id="atk-c-detail" style="margin:8px 0 0; min-height:3.2em; font-size:14px; line-height:1.6; color:#B4C6C8"></p>
+          <div aria-hidden="true" class="bits" data-squares="atkC" style="margin-top:10px"></div>
+        </div>
+        <div style="flex:1 1 380px; min-width:0; border-top:1px solid #2C3F42; padding-top:16px">
+          <p style="margin:0; font-size:13px; color:#B4C6C8">Quantum draw · hidden bits predicted</p>
+          <p id="atk-q-big" style="margin:6px 0 0; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:clamp(28px,3vw,40px); color:#B4C6C8">—</p>
+          <p id="atk-q-detail" style="margin:8px 0 0; min-height:3.2em; font-size:14px; line-height:1.6; color:#B4C6C8"></p>
+          <div aria-hidden="true" class="bits" data-squares="atkQ" style="margin-top:10px"></div>
+        </div>
+      </div>
+      <p style="margin:12px 0 0; font-size:13px; color:#B4C6C8">Each square is one hidden bit. Red means the attacker called it.</p>
+    </div>
+  </div>
+
+  <div style="background:#0E1A1C; color:#E4ECEC">
+    <div style="max-width:1296px; margin:0 auto; padding:clamp(28px,3.5vw,48px) clamp(20px,5vw,72px); display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:24px 48px; border-top:1px solid #2C3F42">
+      <p style="margin:0; flex:1 1 380px; font-family:'Newsreader',Georgia,serif; font-weight:400; font-size:clamp(26px,3vw,42px); line-height:1.12; letter-spacing:-0.025em">Both pass the statistics. Only one survives the replay.</p>
+      <div style="display:flex; flex-wrap:wrap; gap:20px 48px">
+        <div>
+          <p style="margin:0; font-size:13px; color:#B4C6C8">Seeded PRNG replay</p>
+          <p id="c-big" style="margin:6px 0 0; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:clamp(28px,3vw,40px); color:#B4C6C8">—/64</p>
+        </div>
+        <div>
+          <p style="margin:0; font-size:13px; color:#B4C6C8">Quantum draw replay</p>
+          <p id="q-big" style="margin:6px 0 0; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:clamp(28px,3vw,40px); color:#B4C6C8">—/64</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ Deployed today ============ -->
+<section id="deployed" class="on-light" style="background:#F4EFE4; color:#1C1512">
+  <div class="sec" style="max-width:1296px; margin:0 auto; padding:clamp(40px,5vw,64px) clamp(20px,5vw,72px) clamp(48px,5.5vw,72px)">
+    <div style="display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:8px 24px">
+      <p style="margin:0; font-family:'Newsreader',Georgia,serif; font-weight:400; font-size:clamp(56px,10.4vw,156px); line-height:.9; letter-spacing:-0.045em">Deployed today</p>
+      <p style="margin:0 0 1.2em; font-size:13px; font-weight:500; letter-spacing:.14em; text-transform:uppercase; color:#8E1D16">So what</p>
+    </div>
+    <h2 style="margin:clamp(24px,3vw,40px) 0 0; max-width:22em; font-family:'Newsreader',Georgia,serif; font-weight:400; font-size:clamp(30px,3.5vw,52px); line-height:1.06; letter-spacing:-0.03em">Already in production.</h2>
+    <p style="margin:22px 0 0; max-width:640px; font-size:17px; line-height:1.65; color:#5B4F47">Wherever fairness and secrecy carry real money.</p>
+
+    <div style="margin-top:clamp(32px,3.5vw,48px); display:flex; flex-wrap:wrap; gap:24px 40px">
+      <article data-rv="1" style="flex:1 1 300px; min-width:0; display:flex; flex-direction:column; border-top:1px solid #1C1512; padding-top:16px">
+        <p style="margin:0; font-size:14px; font-weight:600">Lottery · Switzerland</p>
+        <p style="margin:18px 0 0; font-family:'Newsreader',Georgia,serif; font-weight:400; font-size:clamp(30px,3vw,42px); letter-spacing:-0.03em; line-height:1.05">ID Quantique</p>
+        <p style="margin:14px 0 0; font-size:15px; line-height:1.6; color:#5B4F47; flex:1 1 auto">Its QRNG draws Loterie Romande’s lottery numbers.</p>
+        <p style="margin:18px 0 0; font-size:14px; font-weight:600; color:#0A625F">QRNG → public draws</p>
+      </article>
+      <article data-rv="1" class="d1" style="flex:1 1 300px; min-width:0; display:flex; flex-direction:column; border-top:1px solid #1C1512; padding-top:16px">
+        <p style="margin:0; font-size:14px; font-weight:600">Finance · Cloud</p>
+        <p style="margin:18px 0 0; font-family:'Newsreader',Georgia,serif; font-weight:400; font-size:clamp(30px,3vw,42px); letter-spacing:-0.03em; line-height:1.05">Quandela Entropy</p>
+        <p style="margin:14px 0 0; font-size:15px; line-height:1.6; color:#5B4F47; flex:1 1 auto">Secures financial transactions in OVHcloud datacenters.</p>
+        <p style="margin:18px 0 0; font-size:14px; font-weight:600; color:#0A625F">QRNG → transaction keys</p>
+      </article>
+      <article data-rv="1" class="d2" style="flex:1 1 300px; min-width:0; display:flex; flex-direction:column; border-top:1px solid #1C1512; padding-top:16px">
+        <p style="margin:0; font-size:14px; font-weight:600">Quantum computing · 2025</p>
+        <p style="margin:18px 0 0; font-family:'Newsreader',Georgia,serif; font-weight:400; font-size:clamp(30px,3vw,42px); letter-spacing:-0.03em; line-height:1.05">JPMorganChase × Quantinuum</p>
+        <p style="margin:14px 0 0; font-size:15px; line-height:1.6; color:#5B4F47; flex:1 1 auto">Certified quantum randomness, billed as quantum computing’s first commercial use.</p>
+        <p style="margin:18px 0 0; font-size:14px; font-weight:600; color:#0A625F">Quantum computer → certified bits</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section style="background:#0E1A1C; color:#E4ECEC">
+  <div class="sec" style="max-width:1296px; margin:0 auto; padding:clamp(48px,5.5vw,80px) clamp(20px,5vw,72px); display:flex; flex-wrap:wrap; align-items:center; gap:40px 56px">
+    <div style="flex:1 1 520px; min-width:0">
+      <p style="margin:0; font-size:14px; font-weight:600; color:#B4C6C8">The case, in one line</p>
+      <p style="margin:18px 0 0; max-width:11em; font-family:'Newsreader',Georgia,serif; font-weight:400; font-size:clamp(44px,6.6vw,104px); line-height:.98; letter-spacing:-0.04em">Fair draws. Unforgeable keys. Nothing to replay.</p>
+      <div style="margin-top:36px; display:flex; flex-wrap:wrap; gap:12px">
+        <a href="#demo" class="btn" style="display:inline-flex; align-items:center; gap:10px; min-height:48px; padding:0 22px; border-radius:999px; background:#E4ECEC; color:#0E1A1C; font-weight:600; font-size:15px; text-decoration:none">Run the demo again
+          <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 14V3M3.5 7.5 8 3l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </a>
+        <a href="#top" class="btn" style="display:inline-flex; align-items:center; min-height:48px; padding:0 22px; border-radius:999px; border:1px solid #5F7477; font-weight:500; font-size:15px; text-decoration:none">Back to top</a>
+      </div>
+    </div>
+    <div aria-hidden="true" style="flex:0 1 auto; perspective:1200px; font-size:clamp(7px,1.15vw,17px); padding:2em">
+      <div class="q"><div class="q-spin" data-sphere><div class="q-arrow" data-arrow></div></div></div>
+    </div>
+  </div>
+</section>
+
+<footer style="background:#0E1A1C; color:#E4ECEC; border-top:1px solid #2C3F42">
+  <div style="max-width:1296px; margin:0 auto; padding:40px clamp(20px,5vw,72px) 56px; display:flex; flex-wrap:wrap; justify-content:space-between; gap:32px">
+    <div style="flex:1 1 260px; min-width:0">
+      <div style="display:flex; align-items:center; gap:10px">
+        <svg width="22" height="22" viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="11.5" fill="none" stroke="currentColor" stroke-width="1.5"></circle><path d="M13 1.5a11.5 11.5 0 0 1 0 23z" fill="currentColor"></path></svg>
+        <span style="font-family:'Newsreader',Georgia,serif; font-weight:500; font-size:20px">QuantumFair</span>
+      </div>
+      <p style="margin:14px 0 0; font-size:14px; line-height:1.6; color:#B4C6C8">Built for the Quantum Leap track. Team: [TEAM NAMES]</p>
+    </div>
+    <div style="flex:2 1 480px; min-width:0">
+      <p style="margin:0; font-size:14px; font-weight:600">Sources</p>
+      <ul style="margin:12px 0 0; padding:0 0 0 18px; font-size:14px; line-height:1.8; color:#B4C6C8">
+        <li>WIRED (2017) — the Novomatic slot-machine PRNG exploit</li>
+        <li>Debian Security Advisory DSA-1571 / CVE-2008-0166 — predictable OpenSSL keys</li>
+        <li>Bitcoin.org (Aug 2013) — Android SecureRandom wallet vulnerability</li>
+        <li>Goldberg &amp; Wagner, Dr. Dobb’s Journal (1996) — Netscape SSL randomness</li>
+        <li>ID Quantique — QRNG for Loterie Romande draws</li>
+        <li>Quantum Rings — QuantumRingsLib SDK and the scarlet_quantum_rings backend, the source of this demo’s quantum bits</li>
+        <li>Quandela — Entropy at OVHcloud datacenters</li>
+        <li>JPMorganChase &amp; Quantinuum (2025) — certified quantum randomness</li>
+      </ul>
+    </div>
+  </div>
+</footer>
+
+</div>
+<script src="assets/app.js"></script>
+</body>
+</html>

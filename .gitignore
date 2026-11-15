@@ -3,3 +3,6 @@
 __pycache__/
 *.pyc
 .pytest_cache/
+
+# Vultr API key for deploy/vultr.sh (never commit, never uploaded to the server)
+deploy/.vultr-api-key

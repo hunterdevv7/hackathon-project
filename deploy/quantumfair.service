@@ -1,0 +1,18 @@
+# systemd unit: runs the QuantumFair API (which also serves the page) under gunicorn.
+# Installed to /etc/systemd/system/quantumfair.service by deploy/setup.sh.
+[Unit]
+Description=QuantumFair (Flask API + page, gunicorn)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=quantumfair
+Group=quantumfair
+WorkingDirectory=/opt/quantumfair
+# .env in /opt/quantumfair is read by python-dotenv at startup (QUANTUM_MODE, QR_TOKEN, ...).
+ExecStart=/opt/quantumfair/.venv/bin/gunicorn --workers 2 --bind 127.0.0.1:8000 --timeout 60 --access-logfile - backend.app:app
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target

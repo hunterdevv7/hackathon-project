@@ -5,3 +5,6 @@ pytest>=8.0
 
 # Quantum engine — tested with QuantumRingsLib 0.12.2000 (+ quantumrings-cpu 0.12.2313) on Python 3.13
 QuantumRingsLib==0.12.2000
+
+# Production server for the Vultr deploy (deploy/). Doesn't run on Windows; use python -m backend.app there.
+gunicorn>=22; sys_platform != "win32"

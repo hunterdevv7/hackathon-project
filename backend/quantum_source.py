@@ -1,8 +1,12 @@
 """Quantum random bits — the FIX panel.
 
-Circuit (same for every draw): n qubits, a Hadamard (H) on each one to put it in
-an equal superposition of |0> and |1>, then measure. Each qubit collapses to 0 or
-1 with probability 1/2. One shot of an n-qubit circuit = one batch of n bits.
+Default circuit: n qubits, a Hadamard (H) on each one to put it in an equal
+superposition of |0> and |1>, then measure. Each qubit collapses to 0 or 1 with
+probability 1/2. One shot of an n-qubit circuit = one batch of n bits.
+
+Optional theta (degrees, 0-180) for the visualizer's slider: RY(theta) on each
+qubit instead of H, so P(0) = cos^2(theta/2). theta=90 is the H circuit (same
+probabilities), 0 is plain |0> and 180 is plain |1>: no superposition, no randomness.
 
 Modes (QUANTUM_MODE in .env):
   - "mock":         OS crypto randomness, tagged engine="mock". For frontend dev.
@@ -20,6 +24,8 @@ from . import config
 QR_MAX_QUBITS = 128
 # The statevector has 2**n entries, so keep the "before measurement" view small.
 MAX_STATE_QUBITS = 8
+# 90 degrees = the Hadamard circuit, the one the randomness claim is about.
+DEFAULT_THETA = 90.0
 
 
 class QuantumEngineError(RuntimeError):
@@ -53,12 +59,16 @@ def _connect():
     return backend
 
 
-def _hadamard_circuit(n: int, measure: bool):
+def _circuit(n: int, measure: bool, theta: float = DEFAULT_THETA):
     qreg = _qr.QuantumRegister(n, "q")
     creg = _qr.ClassicalRegister(n, "c")
     qc = _qr.QuantumCircuit(qreg, creg)
     for i in range(n):
-        qc.h(i)
+        if theta == DEFAULT_THETA:
+            qc.h(i)
+        elif theta != 0:
+            qc.ry(math.radians(theta), i)
+        # theta == 0: no gate, the qubit stays in |0>
     if measure:
         qc.measure(list(range(n)), list(range(n)))
     return qc
@@ -71,33 +81,50 @@ def _run(qc):
         raise QuantumEngineError(f"Quantum Rings run failed: {err}") from err
 
 
-def _draw_quantumrings(n: int) -> list[int]:
+def _draw_quantumrings(n: int, theta: float) -> list[int]:
     _connect()
     bits: list[int] = []
     while len(bits) < n:
         size = min(QR_MAX_QUBITS, n - len(bits))
-        memory = _run(_hadamard_circuit(size, measure=True)).get_memory()
+        memory = _run(_circuit(size, measure=True, theta=theta)).get_memory()
         if not memory or len(memory[0]) != size or set(memory[0]) - {"0", "1"}:
             raise QuantumEngineError(f"unexpected result from Quantum Rings: {memory!r}")
         bits.extend(int(b) for b in memory[0])
     return bits
 
 
-def _statevector_quantumrings(n: int) -> list[complex]:
+def _statevector_quantumrings(n: int, theta: float) -> list[complex]:
     _connect()
-    return list(_run(_hadamard_circuit(n, measure=False)).get_statevector())
+    return list(_run(_circuit(n, measure=False, theta=theta)).get_statevector())
 
 
 # --- Mock engine ------------------------------------------------------------
 
-def _draw_mock(n: int) -> list[int]:
-    return [secrets.randbits(1) for _ in range(n)]
+def _p1(theta: float) -> float:
+    """Chance a qubit prepared with RY(theta) measures 1: sin^2(theta/2)."""
+    return math.sin(math.radians(theta) / 2) ** 2
 
 
-def _statevector_mock(n: int) -> list[complex]:
-    # Exact state of H on n qubits: every basis state has amplitude 1/sqrt(2**n).
-    amp = 1 / math.sqrt(2**n)
-    return [complex(amp, 0)] * (2**n)
+def _draw_mock(n: int, theta: float) -> list[int]:
+    if theta == DEFAULT_THETA:
+        return [secrets.randbits(1) for _ in range(n)]
+    scale = 1 << 53
+    cut = round(_p1(theta) * scale)
+    return [1 if secrets.randbelow(scale) < cut else 0 for _ in range(n)]
+
+
+def _statevector_mock(n: int, theta: float) -> list[complex]:
+    # Exact product state of RY(theta) (or H) on n qubits. For H every basis state
+    # has amplitude 1/sqrt(2**n).
+    a0 = math.cos(math.radians(theta) / 2)
+    a1 = math.sin(math.radians(theta) / 2)
+    out = []
+    for i in range(2**n):
+        amp = 1.0
+        for q in range(n):
+            amp *= a1 if (i >> q) & 1 else a0
+        out.append(complex(amp, 0))
+    return out
 
 
 # --- Public API -------------------------------------------------------------
@@ -106,13 +133,43 @@ def _engine() -> str:
     return "quantumrings" if config.QUANTUM_MODE == "quantumrings" else "mock"
 
 
-def draw(n: int) -> dict:
-    if _engine() == "quantumrings":
-        return {"bits": _draw_quantumrings(n), "source": "quantum", "engine": "quantumrings"}
-    return {"bits": _draw_mock(n), "source": "quantum", "engine": "mock"}
+def describe(theta: float) -> str:
+    if theta == DEFAULT_THETA:
+        return "H on each qubit"
+    if theta == 0:
+        return "no gate on each qubit (stays |0>)"
+    return f"RY({theta:g} deg) on each qubit"
 
 
-def state(n: int) -> dict:
+def status() -> dict:
+    """Which engine answers /quantum-draw, and whether it is ready. Never draws."""
+    engine = _engine()
+    info = {"engine": engine, "ready": True, "error": None, "backend": None}
+    if engine == "quantumrings":
+        info["backend"] = config.QR_BACKEND
+        try:
+            _connect()
+        except QuantumEngineError as err:
+            info["ready"], info["error"] = False, str(err)
+    return info
+
+
+def draw(n: int, theta: float = DEFAULT_THETA) -> dict:
+    engine = _engine()
+    if engine == "quantumrings":
+        bits = _draw_quantumrings(n, theta)
+    else:
+        bits = _draw_mock(n, theta)
+    return {
+        "bits": bits,
+        "source": "quantum",
+        "engine": engine,
+        "theta": theta,
+        "circuit": describe(theta) + ", measure, 1 shot",
+    }
+
+
+def state(n: int, theta: float = DEFAULT_THETA) -> dict:
     """The qubits' state right before measurement, for the visualizer.
 
     basis_states: every possible n-bit outcome with its amplitude and probability
@@ -121,7 +178,10 @@ def state(n: int) -> dict:
     qubits:       per-qubit chance of measuring 0 or 1 (for the split bar).
     """
     engine = _engine()
-    sv = _statevector_quantumrings(n) if engine == "quantumrings" else _statevector_mock(n)
+    if engine == "quantumrings":
+        sv = _statevector_quantumrings(n, theta)
+    else:
+        sv = _statevector_mock(n, theta)
     if len(sv) != 2**n:
         raise QuantumEngineError(f"expected {2**n} amplitudes, got {len(sv)}")
 
@@ -149,7 +209,8 @@ def state(n: int) -> dict:
         "source": "quantum",
         "engine": engine,
         "n": n,
-        "circuit": "H on each qubit, before measurement",
+        "theta": theta,
+        "circuit": describe(theta) + ", before measurement",
         "qubits": qubits,
         "basis_states": basis_states,
     }

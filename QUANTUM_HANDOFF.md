@@ -28,4 +28,5 @@ Differences from the original plan:
 - **Statistical check (build step 8):** Done. [backend/stats.py](backend/stats.py) runs the NIST monobit and runs tests on the last batch. Note that the classical PRNG passes these too: its flaw is predictability (replay), not skewed bits.
 - **Wi-Fi backup:** probably not needed. The Quantum Rings simulator runs on the local CPU (about 0.1s per draw). If we want one anyway, serve a recorded batch tagged `"engine": "quantumrings-recorded"`.
 - **Pitch wording:** Quantum Rings is a simulator running on classical hardware. Present the *mechanism* (superposition → measurement, versus a replayable seed), not "physically random bits".
-- **Visualizer:** switch the split bar to read `/quantum-state` instead of hard-coding 50/50.
+- **Visualizer:** Done. The page's split bar and ket read `/quantum-state?theta=` for the current θ.
+- **Not yet run live:** the RY(θ) circuit for θ ≠ 90°. Its `qc.ry(theta, qubit)` call matches the QuantumRingsLib 0.12.2000 signature, but it hasn't run with credentials. θ = 90° uses the same H circuit as before.
