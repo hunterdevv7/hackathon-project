@@ -17,7 +17,7 @@ The page in `frontend/` is the pitch and the live demo in one scroll. Every rand
 | Same machine, switch on **Quantum draw** | Fix: the machine turns teal and its marquee reads NO SEED. **Replay seed** has nothing to replay, so fresh qubits land on new reels and match only at chance (~32/64). The θ slider in the right-hand panel shows the randomness comes from superposition: at 0° or 180° the reels repeat. | `GET /quantum-draw?theta=`, `GET /quantum-state?theta=`, `POST /stat-test` |
 | The attack | The core claim: the server sees half of your last spin on each side of the switch and tries all 10,000 seeds. It predicts 100% of the PRNG bits and about 50% of the quantum ones. | `POST /attack` |
 
-The source pill on the quantum panel shows which engine answered. It reads **Quantum Rings SDK** for real circuits and **Mock engine** for `QUANTUM_MODE=mock`. If the API is down, the page says so and draws nothing.
+The source pill on the quantum panel shows which engine answered. It reads **Quantum Rings SDK** for real circuits and **Dev mock (not quantum)** for `QUANTUM_MODE=mock`. If the API is down, the page says so and draws nothing.
 
 ## API contract (locked)
 | Method & path | Response |

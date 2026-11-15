@@ -37,12 +37,12 @@ The scripts need bash, ssh and curl. On Windows, use Git Bash.
 ## 3. Deploy the app
 ```bash
 ./deploy/deploy.sh <ip> --with-env    # uploads .env with QUANTUM_MODE=quantumrings, QR_TOKEN, QR_ACCOUNT
-./deploy/deploy.sh <ip>               # without credentials: the page runs on the mock engine and says so
+./deploy/deploy.sh <ip>               # without credentials: the page shows "Quantum Rings unavailable" and draws nothing
 ```
 The last line prints `Live: http://<ip>/`. To redeploy after changes, run the same command again.
 
 ## 4. Check it
-- **The page:** open `http://<ip>/`. On the live demo's Quantum draw side, the pill should read **Quantum Rings SDK**. "Mock engine" means no credentials were uploaded.
+- **The page:** open `http://<ip>/`. On the live demo's Quantum draw side, the pill should read **Quantum Rings SDK**. "Quantum Rings unavailable" means the credentials are missing or wrong.
 - **The API:** `curl http://<ip>/engine` should return `{"engine": "quantumrings", "ready": true, ...}`.
 - **Logs:** `ssh -i ~/.ssh/quantumfair_vultr root@<ip> journalctl -u quantumfair -f`
 - **Restart:** `ssh -i ~/.ssh/quantumfair_vultr root@<ip> systemctl restart quantumfair`

@@ -792,8 +792,8 @@
       } else if (e.engine === 'quantumrings') {
         pill = 'Quantum Rings unavailable'; color = '#8E1D16'; line = e.error + ' Pulls will fail rather than fake bits.';
       } else {
-        pill = 'Mock engine'; color = '#7A5200';
-        line = 'QUANTUM_MODE=mock: the OS’s crypto randomness stands in for Quantum Rings. Set QUANTUM_MODE=quantumrings in .env to run the real circuits.';
+        pill = 'Dev mock (not quantum)'; color = '#7A5200';
+        line = 'Local development mode: these bits come from the OS’s crypto randomness, not from Quantum Rings circuits.';
       }
     }
     text('src-pill', pill);

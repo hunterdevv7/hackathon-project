@@ -24,7 +24,7 @@ echo "==> Python environment"
 echo "==> .env"
 if [ ! -f .env ]; then
   cp .env.example .env
-  echo "    No .env was uploaded: created one from .env.example (QUANTUM_MODE=mock)."
+  echo "    No .env was uploaded: created one from .env.example (QUANTUM_MODE=quantumrings, no credentials: draws fail until QR_TOKEN and QR_ACCOUNT are set)."
 fi
 chmod 600 .env
 chown -R "$APP_USER:$APP_USER" "$APP_DIR"
