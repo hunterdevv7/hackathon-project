@@ -81,7 +81,12 @@ def create_app() -> Flask:
         source = request.args.get("source")
         if source not in stats.SOURCES:
             raise BadRequest("source must be 'quantum' or 'classical'")
-        return jsonify(stats.run(source))
+        result = stats.run(source)
+        if result is None:  # nothing drawn yet: test a fresh default-size batch
+            module = quantum_source if source == "quantum" else classical_source
+            stats.record(source, module.draw(config.BATCH_SIZE)["bits"])
+            result = stats.run(source)
+        return jsonify(result)
 
     return app
 

@@ -19,7 +19,7 @@ Setup: see [SETUP.md](SETUP.md).
 - Draws accept an optional `?n=` (1–1024, default 64). Replay accepts an optional `"n"` in its body.
 - `/quantum-state` is for the visualizer. It returns the qubits' state *before* measurement. The response is a new endpoint and changes nothing in the contract above. In `basis_states`, qubit 0 is the rightmost character of `bits`.
 - Errors come back as `{"error": "..."}`: HTTP 400 for bad input, and 503 if the Quantum Rings engine is unavailable. The API never falls back to mock bits.
-- Two fields go beyond the contract but don't break it. `engine` stops anyone from demoing the mock as quantum. `placeholder: true` appears on the stat-test until the real test lands.
+- Two fields go beyond the contract but don't break it. `engine` stops anyone from demoing the mock as quantum. The stat-test also returns `n`, `ones`, and per-test `tests.{monobit,runs}.{p_value,pass}`. It checks the last batch drawn from that source, or draws a fresh one if there isn't one yet. `score` is the lowest p-value, and the batch passes when every p-value is ≥ 0.01.
 
 ## Layout
 ```

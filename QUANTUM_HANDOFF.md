@@ -25,7 +25,7 @@ Differences from the original plan:
 - The SDK was tested on **Python 3.13**, not 3.11.
 
 ## Still open
-- **Statistical check (build step 8):** [backend/stats.py](backend/stats.py) still returns a placeholder (`score: 0.87`, `placeholder: true`). Replace it with a real monobit/frequency or chi-square test on the last batch.
+- **Statistical check (build step 8):** Done. [backend/stats.py](backend/stats.py) runs the NIST monobit and runs tests on the last batch. Note that the classical PRNG passes these too: its flaw is predictability (replay), not skewed bits.
 - **Wi-Fi backup:** probably not needed. The Quantum Rings simulator runs on the local CPU (about 0.1s per draw). If we want one anyway, serve a recorded batch tagged `"engine": "quantumrings-recorded"`.
 - **Pitch wording:** Quantum Rings is a simulator running on classical hardware. Present the *mechanism* (superposition → measurement, versus a replayable seed), not "physically random bits".
 - **Visualizer:** switch the split bar to read `/quantum-state` instead of hard-coding 50/50.
