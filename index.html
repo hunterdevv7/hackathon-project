@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>QuantumFair</title>
+    <meta
+      name="description"
+      content="Watch a classical random generator get predicted by replaying its seed, then watch a quantum generator resist the same trick."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400&family=IBM+Plex+Sans:wght@400;600&display=swap"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script defer src="js/mock.js"></script>
+    <script defer src="js/api.js"></script>
+    <script defer src="js/visualizer.js"></script>
+    <script defer src="js/app.js"></script>
+  </head>
+  <body>
+    <header class="site-header wrap">
+      <div class="title-row">
+        <h1>QuantumFair</h1>
+        <span class="mode-tag" id="mode-tag" hidden>Mock data</span>
+      </div>
+      <p class="lede">
+        Two random number generators. Replay the classical one's seed and every bit comes back. Measure the
+        quantum one and nothing repeats.
+      </p>
+    </header>
+
+    <main class="wrap panels">
+      <!-- ============ Classical ============ -->
+      <section class="panel panel--classical" id="c-panel" aria-labelledby="c-title">
+        <div class="panel-head">
+          <span class="panel-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+  <g>
+    <path d="M350 100 H419 Q433 100 434 115 L437 174 Q477 183 512 205 L558 160 Q570 148 582 160 L630 208 Q641 220 630 233 L588 280 Q611 315 618 356 L679 357 Q695 357 695 374 V443 Q695 459 679 460 L618 462 Q612 493 597 521 L553 564 Q546 571 552 579 L581 614 Q566 637 558 663 L507 617 Q473 638 437 645 L434 701 Q434 719 418 719 H350 Q335 719 335 703 L332 645 Q290 636 256 614 L211 655 Q200 666 188 654 L141 606 Q130 595 141 582 L180 536 Q158 501 150 459 L90 458 Q73 458 73 442 V374 Q73 358 90 357 L150 355 Q159 314 181 280 L140 234 Q130 222 141 210 L188 162 Q200 150 212 162 L256 205 Q291 184 332 174 L336 115 Q337 100 350 100 Z" vector-effect="non-scaling-stroke" />
+    <circle cx="382" cy="410" r="178" vector-effect="non-scaling-stroke" />
+    <circle cx="382" cy="412" r="55" vector-effect="non-scaling-stroke" />
+    <path d="M430 351 L485 290" vector-effect="non-scaling-stroke" />
+  </g>
+  <g>
+    <path d="M701 482 H754 Q770 482 771 498 L773 537 Q797 545 816 556 L850 529 Q862 519 873 530 L906 563 Q917 574 908 586 L878 622 Q889 642 894 664 L935 666 Q951 666 951 682 V736 Q951 752 935 753 L893 755 Q886 780 875 798 L904 832 Q915 844 903 855 L869 888 Q858 898 846 889 L815 861 Q794 873 769 879 L768 914 Q767 930 752 930 H702 Q685 930 684 914 L683 879 Q657 872 635 860 L604 889 Q592 899 580 888 L547 854 Q536 843 546 831 L576 797 Q564 777 558 753 L513 753 Q496 753 496 737 V685 Q496 667 513 666 L558 664 Q565 636 582 614 L553 579 Q547 572 553 566 L587 533 Q598 524 609 534 L640 556 Q661 544 683 537 L684 499 Q685 482 701 482 Z" vector-effect="non-scaling-stroke" />
+    <circle cx="726" cy="712" r="119" vector-effect="non-scaling-stroke" />
+    <circle cx="726" cy="712" r="42" vector-effect="non-scaling-stroke" />
+  </g>
+</svg></span>
+          <div>
+            <h2 id="c-title">Classical</h2>
+            <p class="panel-sub">Seeded pseudo-random generator</p>
+          </div>
+        </div>
+
+        <p class="caption">A classical generator is a formula: same seed in, same bits out.</p>
+
+        <div class="controls">
+          <button class="btn btn--primary" id="c-run" type="button" data-action>
+            <span class="spinner" aria-hidden="true"></span>
+            <span class="btn-label">Run Draw</span>
+          </button>
+        </div>
+
+        <form class="seed-form" id="c-seed-form" novalidate>
+          <label for="c-seed">Seed</label>
+          <p class="field-hint" id="c-seed-hint">Filled in after each draw. You can also type your own.</p>
+          <div class="field-row">
+            <input
+              id="c-seed"
+              name="seed"
+              type="text"
+              inputmode="numeric"
+              autocomplete="off"
+              spellcheck="false"
+              aria-describedby="c-seed-hint c-seed-error"
+            />
+            <button class="btn btn--secondary" id="c-replay" type="submit" data-action>
+              <span class="spinner" aria-hidden="true"></span>
+              <span class="btn-label">Replay Seed</span>
+            </button>
+          </div>
+          <p class="field-error" id="c-seed-error" aria-live="polite"></p>
+        </form>
+
+        <div class="panel-error" id="c-error" hidden>
+          <p id="c-error-text"></p>
+          <code id="c-error-detail"></code>
+          <button class="btn btn--secondary" id="c-retry" type="button">
+            <span class="btn-label">Retry Draw</span>
+          </button>
+        </div>
+
+        <div class="stat" id="c-stat" data-state="idle">
+          <span class="stat-name">
+            Randomness test
+            <small>Checks that the bits look statistically random</small>
+          </span>
+          <span class="stat-result" aria-live="polite">
+            <span class="stat-spinner" aria-hidden="true"></span>
+            <span class="stat-glyph" aria-hidden="true">&ndash;</span>
+            <span class="stat-text">Not tested yet</span>
+          </span>
+        </div>
+
+        <section class="log" aria-labelledby="c-log-title">
+          <h3 class="section-label" id="c-log-title">Output log</h3>
+          <p class="log-empty" id="c-log-empty">No draws yet. Press Run Draw.</p>
+          <ol class="log-list" id="c-log" tabindex="0" aria-label="Classical output log, newest first" hidden></ol>
+        </section>
+
+        <p class="sr-only" id="c-status" role="status"></p>
+      </section>
+
+      <!-- ============ Quantum ============ -->
+      <section class="panel panel--quantum" id="q-panel" aria-labelledby="q-title">
+        <div class="panel-head">
+          <span class="panel-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" aria-hidden="true" focusable="false">
+  <g fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="512" cy="512" r="418" vector-effect="non-scaling-stroke" />
+    <ellipse cx="512" cy="512" rx="418" ry="78" stroke-opacity="0.35" vector-effect="non-scaling-stroke" />
+    <path d="M512 94V930" vector-effect="non-scaling-stroke" />
+    <path d="M512 512 717 270M670 291 717 270 705 319" vector-effect="non-scaling-stroke" />
+  </g>
+</svg></span>
+          <div>
+            <h2 id="q-title">Quantum</h2>
+            <p class="panel-sub">Qubits measured on Quantum Rings</p>
+          </div>
+        </div>
+
+        <figure class="qviz" id="qviz" data-state="superposition">
+          <div class="qviz-bar" aria-hidden="true">
+            <div class="qviz-mix">
+              <div class="qviz-half qviz-half--0"></div>
+              <div class="qviz-half qviz-half--1"></div>
+              <div class="qviz-divider"></div>
+            </div>
+            <div class="qviz-flash"></div>
+            <span class="qviz-label qviz-label--0">0</span>
+            <span class="qviz-label qviz-label--1">1</span>
+          </div>
+          <p class="qviz-state" id="q-state">In superposition: 50% 0 &middot; 50% 1</p>
+          <figcaption class="explainer">
+            <span class="section-label">What you're seeing</span>
+            <p>
+              A qubit can be '0' and '1' at the same time — that's superposition, a real physical state, not a
+              trick. The bar represents that mix. The instant we measure it, physics forces it to pick one side
+              — and which side it picks isn't hidden, it's genuinely undetermined until that exact moment. That's
+              what makes it different from a coin flip you could predict with enough information.
+            </p>
+          </figcaption>
+        </figure>
+
+        <div class="qstrip-wrap">
+          <p class="qstrip-label" id="q-strip-label">64 measurements per draw. Each square is one bit.</p>
+          <div class="qstrip" id="q-strip" aria-hidden="true"></div>
+        </div>
+
+        <div class="controls">
+          <button class="btn btn--primary" id="q-run" type="button" data-action>
+            <span class="spinner" aria-hidden="true"></span>
+            <span class="btn-label">Run Draw</span>
+          </button>
+        </div>
+
+        <div class="panel-error" id="q-error" hidden>
+          <p id="q-error-text"></p>
+          <code id="q-error-detail"></code>
+          <button class="btn btn--secondary" id="q-retry" type="button">
+            <span class="btn-label">Retry Draw</span>
+          </button>
+        </div>
+
+        <div class="stat" id="q-stat" data-state="idle">
+          <span class="stat-name">
+            Randomness test
+            <small>Checks that the bits look statistically random</small>
+          </span>
+          <span class="stat-result" aria-live="polite">
+            <span class="stat-spinner" aria-hidden="true"></span>
+            <span class="stat-glyph" aria-hidden="true">&ndash;</span>
+            <span class="stat-text">Not tested yet</span>
+          </span>
+        </div>
+
+        <section class="log" aria-labelledby="q-log-title">
+          <h3 class="section-label" id="q-log-title">Output log</h3>
+          <p class="log-empty" id="q-log-empty">No draws yet. Press Run Draw.</p>
+          <ol class="log-list" id="q-log" tabindex="0" aria-label="Quantum output log, newest first" hidden></ol>
+        </section>
+
+        <p class="sr-only" id="q-status" role="status"></p>
+      </section>
+    </main>
+
+    <footer class="site-footer wrap">
+      <p id="source-note"></p>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" aria-hidden="true" focusable="false">
+  <g fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="512" cy="512" r="418" vector-effect="non-scaling-stroke" />
+    <ellipse cx="512" cy="512" rx="418" ry="78" stroke-opacity="0.35" vector-effect="non-scaling-stroke" />
+    <path d="M512 94V930" vector-effect="non-scaling-stroke" />
+    <path d="M512 512 717 270M670 291 717 270 705 319" vector-effect="non-scaling-stroke" />
+  </g>
+</svg>

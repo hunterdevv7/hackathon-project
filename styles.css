@@ -1,0 +1,999 @@
+/* =====================================================================
+   QuantumFair - design tokens
+   Color 60/30/10: paper neutrals (60) / graphite ink (30) / Cherenkov blue (10)
+   Type scale: 14/20, 16/24, 20/28, 28/36, 36/44. Weights: 400 and 600 only.
+   Spacing: 4, 8, 12, 16, 24, 32, 48, 64 only.
+   Motion: transform and opacity only.
+   ===================================================================== */
+:root {
+  /* 60: neutral */
+  --paper: #f5f3ee;
+  --surface: #fbfaf7;
+  --field: #ffffff;
+  --border: #dad6cc;
+  --border-strong: #8a867c;
+
+  /* 30: secondary */
+  --ink: #1e262c;
+  --ink-muted: #5a636a;
+
+  /* 10: accent, reserved for Run Draw, the visualizer, and focus rings */
+  --accent: #2f5bff;
+  --accent-tint: #dce4ff;
+  --on-accent: #ffffff;
+
+  /* semantic exception: Fail badges and error text only */
+  --danger: #a23b2a;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  --radius-sm: 4px;
+  --radius: 8px;
+
+  --font-sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  --weight-regular: 400;
+  --weight-strong: 600;
+
+  --dur-fast: 150ms;
+  --dur-base: 200ms;
+  --dur-uncollapse: 250ms;
+  --dur-collapse: 420ms;
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-snap: cubic-bezier(0.34, 1.45, 0.5, 1);
+
+  --measure: 60ch;
+}
+
+/* ---------- base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: var(--weight-regular);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+p,
+ol,
+figure {
+  margin: 0;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.wrap {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-left: var(--space-4);
+  padding-right: var(--space-4);
+}
+
+/* ---------- header ---------- */
+.site-header {
+  padding-top: var(--space-8);
+  padding-bottom: var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2) var(--space-4);
+}
+
+h1 {
+  font-size: 36px;
+  line-height: 44px;
+  font-weight: var(--weight-strong);
+  letter-spacing: -0.01em;
+}
+
+.lede {
+  max-width: var(--measure);
+  font-size: 20px;
+  line-height: 28px;
+  color: var(--ink-muted);
+}
+
+.mode-tag {
+  display: inline-block;
+  padding: 0 var(--space-2);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: var(--weight-strong);
+  color: var(--ink-muted);
+}
+
+/* ---------- two-panel layout ---------- */
+.panels {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-6);
+}
+
+.panel {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  padding: var(--space-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 2px rgba(30, 38, 44, 0.04);
+}
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.panel-icon {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.panel--quantum .panel-icon {
+  color: var(--accent);
+}
+
+.panel-icon svg {
+  width: 32px;
+  height: 32px;
+  display: block;
+}
+
+h2 {
+  font-size: 28px;
+  line-height: 36px;
+  font-weight: var(--weight-strong);
+}
+
+.panel-sub {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--ink-muted);
+}
+
+.caption {
+  max-width: var(--measure);
+}
+
+.section-label {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: var(--weight-strong);
+  color: var(--ink-muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* ---------- buttons ---------- */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  font: inherit;
+  font-weight: var(--weight-strong);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform var(--dur-fast) var(--ease-out), opacity var(--dur-fast) var(--ease-out);
+}
+
+/* Hover and press use an overlay whose opacity changes, never a color transition. */
+.btn::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: var(--ink);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+
+.btn:hover::after {
+  opacity: 0.08;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn--primary {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.btn--primary::after {
+  background: #000000;
+}
+
+.btn--primary:hover::after {
+  opacity: 0.16;
+}
+
+.btn--secondary {
+  background: var(--surface);
+  color: var(--ink);
+  border-color: var(--ink);
+}
+
+.btn[aria-disabled="true"] {
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+.btn[aria-disabled="true"]:hover::after {
+  opacity: 0;
+}
+
+.btn[aria-disabled="true"]:active {
+  transform: none;
+}
+
+.btn-label {
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+
+/* Inline spinner: overlays the label so the button never changes size. */
+.spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  margin: -8px 0 0 -8px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.btn.is-busy .spinner {
+  opacity: 1;
+  animation: spin 700ms linear infinite;
+}
+
+.btn.is-busy .btn-label {
+  opacity: 0;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------- seed form ---------- */
+.seed-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.seed-form label {
+  font-weight: var(--weight-strong);
+}
+
+.field-hint {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--ink-muted);
+}
+
+.field-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-1);
+}
+
+.field-row input {
+  flex: 1 1 160px;
+  min-width: 0;
+  min-height: 44px;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--field);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.field-row input[aria-invalid="true"] {
+  border-color: var(--danger);
+  box-shadow: inset 0 0 0 1px var(--danger);
+}
+
+/* Stays in the layout while empty so screen readers reliably announce new errors. */
+.field-error {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--danger);
+}
+
+/* ---------- stat badge ---------- */
+.stat {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--paper);
+}
+
+.stat-name {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: var(--weight-strong);
+}
+
+.stat-name small {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: var(--weight-regular);
+  color: var(--ink-muted);
+}
+
+.stat-result {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 32px;
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: var(--weight-strong);
+  color: var(--ink-muted);
+  background: var(--surface);
+}
+
+.stat-glyph {
+  min-width: 12px;
+  text-align: center;
+}
+
+.stat-spinner {
+  display: none;
+  width: 12px;
+  height: 12px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+}
+
+.stat[data-state="testing"] .stat-spinner {
+  display: inline-block;
+  animation: spin 700ms linear infinite;
+}
+
+.stat[data-state="testing"] .stat-glyph {
+  display: none;
+}
+
+.stat[data-state="pass"] .stat-result {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
+}
+
+.stat[data-state="fail"] .stat-result {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.stat[data-state="error"] .stat-result {
+  border-style: dashed;
+}
+
+/* ---------- inline error ---------- */
+.panel-error {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--danger);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.panel-error p {
+  color: var(--danger);
+  font-weight: var(--weight-strong);
+}
+
+.panel-error code {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--ink-muted);
+  overflow-wrap: anywhere;
+}
+
+.panel-error .btn {
+  align-self: flex-start;
+}
+
+/* ---------- output log ---------- */
+.log {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.log-empty {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--ink-muted);
+}
+
+.log-list {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-height: 400px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border-radius: var(--radius);
+}
+
+.log-entry {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--paper);
+  animation: entry-in var(--dur-base) var(--ease-out);
+}
+
+@keyframes entry-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+}
+
+.log-entry--cracked {
+  border-color: var(--ink);
+  box-shadow: inset 4px 0 0 var(--ink);
+  padding-left: var(--space-4);
+}
+
+.log-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-3);
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--ink-muted);
+}
+
+.log-title-text {
+  color: var(--ink);
+  font-weight: var(--weight-strong);
+}
+
+.chip {
+  display: inline-block;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-sm);
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: var(--weight-strong);
+}
+
+.bits {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--ink);
+}
+
+.byte {
+  white-space: nowrap;
+}
+
+.log-note {
+  max-width: var(--measure);
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.log-entry--skeleton {
+  animation: skeleton-pulse 900ms ease-in-out infinite alternate;
+}
+
+.skeleton-line {
+  display: block;
+  height: 12px;
+  border-radius: var(--radius-sm);
+  background: var(--border);
+}
+
+.skeleton-line--short {
+  width: 60%;
+}
+
+@keyframes skeleton-pulse {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0.5;
+  }
+}
+
+/* =====================================================================
+   Quantum visualizer
+   Each half is twice the bar's width, so translateX moves the 0/1 boundary
+   without ever exposing an edge, even during the overshoot.
+   ===================================================================== */
+.qviz {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.qviz-bar {
+  position: relative;
+  height: 72px;
+  overflow: hidden;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--accent-tint);
+  isolation: isolate;
+}
+
+.qviz-mix {
+  position: absolute;
+  inset: 0;
+}
+
+.qviz-half {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  transition: transform var(--dur-collapse) var(--ease-snap);
+}
+
+.qviz-half--0 {
+  left: -100%;
+  right: 0;
+  background: var(--accent);
+  transform: translateX(-25%);
+}
+
+.qviz-half--1 {
+  left: 0;
+  right: -100%;
+  background: repeating-linear-gradient(135deg, var(--accent) 0 4px, var(--accent-tint) 4px 12px);
+  transform: translateX(25%);
+}
+
+.qviz-divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--surface);
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+
+.qviz-flash {
+  position: absolute;
+  inset: 0;
+  background: #ffffff;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.qviz-flash.is-on {
+  animation: qviz-flash var(--dur-base) ease-out;
+}
+
+.qviz-label {
+  position: absolute;
+  top: 50%;
+  min-width: 40px;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: var(--weight-strong);
+  text-align: center;
+  transform: translateY(-50%);
+  transition: opacity var(--dur-base) var(--ease-out), transform var(--dur-collapse) var(--ease-snap);
+}
+
+.qviz-label--0 {
+  left: var(--space-3);
+}
+
+.qviz-label--1 {
+  right: var(--space-3);
+}
+
+/* superposition: a live 50/50 mix that never settles */
+.qviz[data-state="superposition"] .qviz-mix {
+  animation: qviz-drift 2400ms ease-in-out infinite alternate;
+}
+
+.qviz[data-state="superposition"] .qviz-half,
+.qviz[data-state="measuring"] .qviz-half {
+  transition-duration: var(--dur-uncollapse);
+  transition-timing-function: var(--ease-out);
+}
+
+.qviz[data-state="superposition"] .qviz-half--0 {
+  animation: qviz-pulse 1200ms ease-in-out infinite alternate;
+}
+
+.qviz[data-state="superposition"] .qviz-half--1 {
+  animation: qviz-pulse 1200ms ease-in-out infinite alternate-reverse;
+}
+
+/* measuring: the same mix, agitated, while the request is in flight */
+.qviz[data-state="measuring"] .qviz-mix {
+  animation: qviz-drift-wide 600ms ease-in-out infinite alternate;
+}
+
+.qviz[data-state="measuring"] .qviz-half--0 {
+  animation: qviz-pulse 400ms ease-in-out infinite alternate;
+}
+
+.qviz[data-state="measuring"] .qviz-half--1 {
+  animation: qviz-pulse 400ms ease-in-out infinite alternate-reverse;
+}
+
+/* collapse: snap to one side */
+.qviz[data-state="collapsed-0"] .qviz-half--0 {
+  transform: translateX(0);
+}
+
+.qviz[data-state="collapsed-0"] .qviz-half--1 {
+  transform: translateX(50%);
+}
+
+.qviz[data-state="collapsed-1"] .qviz-half--0 {
+  transform: translateX(-50%);
+}
+
+.qviz[data-state="collapsed-1"] .qviz-half--1 {
+  transform: translateX(0);
+}
+
+.qviz[data-state^="collapsed"] .qviz-divider {
+  opacity: 0;
+}
+
+.qviz[data-state="collapsed-0"] .qviz-label--1,
+.qviz[data-state="collapsed-1"] .qviz-label--0 {
+  opacity: 0;
+}
+
+.qviz[data-state="collapsed-0"] .qviz-label--0,
+.qviz[data-state="collapsed-1"] .qviz-label--1 {
+  transform: translateY(-50%) scale(1.2);
+}
+
+@keyframes qviz-drift {
+  from {
+    transform: translateX(-3%);
+  }
+
+  to {
+    transform: translateX(3%);
+  }
+}
+
+@keyframes qviz-drift-wide {
+  from {
+    transform: translateX(-6%);
+  }
+
+  to {
+    transform: translateX(6%);
+  }
+}
+
+@keyframes qviz-pulse {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0.72;
+  }
+}
+
+@keyframes qviz-flash {
+  from {
+    opacity: 0.7;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+.qviz-state {
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: var(--weight-strong);
+}
+
+/* explainer: always visible, right under the bar */
+.explainer {
+  max-width: var(--measure);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding-left: var(--space-4);
+  border-left: 2px solid var(--accent);
+}
+
+/* ---------- bit strip ---------- */
+.qstrip-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.qstrip-label {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--ink-muted);
+}
+
+.qstrip {
+  display: grid;
+  grid-template-columns: repeat(16, minmax(0, 1fr));
+  gap: var(--space-1);
+}
+
+.qcell {
+  position: relative;
+  height: 24px;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+}
+
+/* superposed cell: a tiny 50/50 split, like the bar */
+.qcell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--accent) 0 50%, var(--accent-tint) 50% 100%);
+  opacity: 0.4;
+  transition: opacity var(--dur-fast) var(--ease-out) var(--delay, 0ms);
+}
+
+.qcell-face {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 20px;
+  opacity: 0;
+  transform: scale(0.6);
+  transition: opacity var(--dur-base) var(--ease-out) var(--delay, 0ms),
+    transform var(--dur-base) var(--ease-snap) var(--delay, 0ms);
+}
+
+.qcell[data-bit="0"]::before,
+.qcell[data-bit="1"]::before {
+  opacity: 0;
+}
+
+.qcell[data-bit="0"] .qcell-face {
+  opacity: 1;
+  transform: scale(1);
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.qcell[data-bit="1"] .qcell-face {
+  opacity: 1;
+  transform: scale(1);
+  background: var(--accent-tint);
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+/* returning to superposition is quick and unstaggered */
+.qstrip[data-state="superposition"] .qcell::before,
+.qstrip[data-state="superposition"] .qcell-face,
+.qstrip[data-state="measuring"] .qcell::before,
+.qstrip[data-state="measuring"] .qcell-face {
+  transition-delay: 0ms;
+}
+
+/* skeleton: only once a measurement has taken longer than a second */
+.qstrip[data-long="true"] .qcell::before {
+  animation: skeleton-pulse 900ms ease-in-out infinite alternate;
+  animation-delay: var(--delay, 0ms);
+}
+
+/* ---------- footer ---------- */
+.site-footer {
+  padding-top: var(--space-8);
+  padding-bottom: var(--space-12);
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--ink-muted);
+}
+
+.site-footer p {
+  max-width: var(--measure);
+}
+
+/* ---------- wide screens ---------- */
+@media (min-width: 880px) {
+  .wrap {
+    padding-left: var(--space-8);
+    padding-right: var(--space-8);
+  }
+
+  .site-header {
+    padding-top: var(--space-12);
+  }
+
+  .panels {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-8);
+  }
+
+  .panel {
+    padding: var(--space-6);
+  }
+
+  .qviz-bar {
+    height: 96px;
+  }
+
+  .qcell {
+    height: 32px;
+  }
+}
+
+/* =====================================================================
+   Reduced motion: no looping motion, no stagger, no flash.
+   The collapse becomes an instant swap; cells crossfade with opacity only.
+   ===================================================================== */
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+  }
+
+  .qviz-half,
+  .qviz-label,
+  .qcell-face,
+  .qcell::before,
+  .btn {
+    transition-property: opacity !important;
+    transition-duration: var(--dur-fast) !important;
+    transition-delay: 0ms !important;
+  }
+
+  .qviz-flash {
+    display: none;
+  }
+
+  /* busy indicators stay visible, but only fade instead of spinning */
+  .btn.is-busy .spinner,
+  .stat[data-state="testing"] .stat-spinner {
+    animation: busy-fade 900ms ease-in-out infinite alternate !important;
+  }
+}
+
+@keyframes busy-fade {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0.3;
+  }
+}
