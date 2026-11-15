@@ -17,6 +17,11 @@ On macOS/Linux, use `python3.13 -m venv .venv && source .venv/bin/activate` and 
 python -m backend.app        # http://localhost:5000
 ```
 
+Terminal demo, no server needed. It shows classical bits being predicted from a brute-forced seed, then quantum bits that can't be predicted, then the stat test:
+```powershell
+python -m backend.demo       # optional: --n 128
+```
+
 ## 3. Try every endpoint
 ```powershell
 curl http://localhost:5000/health                      # {"status": "ok"}
